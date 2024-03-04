@@ -1,0 +1,30 @@
+
+### Get all accounts
+GET http://localhost:8090/accounts
+
+
+### Create a user
+GET http://localhost:8090/accounts/1
+
+### Create a user
+GET http://localhost:8090/accounts/500
+
+### Create a user
+POST http://localhost:8090/accounts
+Content-Type: application/json
+
+{
+  "id": -1,
+  "owner": "Ivo",
+  "balance": 0.0
+}
+
+### Create a user
+POST http://localhost:8090/accounts
+Content-Type: application/json
+
+{
+  "id": -1,
+  "owner": "Ivo",
+  "balance": -5.0
+}
