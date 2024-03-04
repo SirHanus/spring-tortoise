@@ -64,4 +64,24 @@ public class AccountIntegrationTest {
                 .statusCode(400);
 
     }
+
+    @Test
+    public void testGetAccountByIdCorrect() {
+        given().when().get("/accounts/1")
+                .then()
+                .statusCode(200)
+                .body("id", is(1))
+                .body("owner",is("Mrkev"))
+                .body("balance", is(100.0F));
+
+    }
+
+    @Test
+    public void testGetAccountByIdIncorrect() {
+        given().when().get("/accounts/9")
+                .then()
+                .statusCode(404);
+
+
+    }
 }
