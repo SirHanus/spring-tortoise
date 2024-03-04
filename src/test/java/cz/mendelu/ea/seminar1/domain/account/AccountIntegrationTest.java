@@ -84,4 +84,35 @@ public class AccountIntegrationTest {
 
 
     }
+
+    @Test
+    public void testUpdateAccountById() {
+        Account updatedAccountJson = new Account(1L,"UpdatedOwner", 300);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(updatedAccountJson)
+                .when()
+                .put("/accounts/update/1")
+                .then()
+                .statusCode(200) // Assuming the response status for a successful update is 200 OK
+                .body("id", is(1))
+                .body("owner", is("UpdatedOwner"))
+                .body("balance", is(300.0f)); //
+    }
+
+    @Test
+    public void testDeleteAccountById() {
+        given()
+                .when()
+                .delete("/accounts/del/1")
+                .then()
+                .statusCode(204);
+
+        given()
+                .when()
+                .get("/accounts/1")
+                .then()
+                .statusCode(404);
+    }
 }

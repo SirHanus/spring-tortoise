@@ -28,3 +28,14 @@ Content-Type: application/json
   "owner": "Ivo",
   "balance": -5.0
 }
+
+### Create a transaction
+POST http://localhost:8090/transactions/
+Content-Type: application/json
+
+{
+  "id": 1,
+  "amount": 100.0,
+  "sourceAccountId": 2,
+  "targetAccountId": 1
+}

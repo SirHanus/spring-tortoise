@@ -39,4 +39,14 @@ public class AccountController {
         return accountService.createAccount(account);
     }
 
+    @PutMapping(value = "/update/{id}", produces = "application/json")
+    public Account updateAccount(@PathVariable Long id, @RequestBody @Valid Account accountDetails) {
+        return accountService.updateAccount(id, accountDetails).orElseThrow(NotFound::new);
+    }
+
+    @DeleteMapping(value = "/del/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id).orElseThrow(NotFound::new);
+    }
 }
