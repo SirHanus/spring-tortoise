@@ -3,11 +3,12 @@ package cz.mendelu.ea.seminar1.domain.transaction;
 import cz.mendelu.ea.seminar1.domain.account.Account;
 import cz.mendelu.ea.seminar1.domain.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class TransactionService {
@@ -23,7 +24,7 @@ public class TransactionService {
     public List<Transaction> getAllTransactions() {
         Set<Transaction> uniqueTransactions = new HashSet<>();
         accountService.getAllAccounts().forEach(account -> uniqueTransactions.addAll(account.getTransactions()));
-        return (new ArrayList<Transaction>(uniqueTransactions));
+        return (new ArrayList<>(uniqueTransactions));
 
     }
     public Transaction processTransaction(Transaction transaction, Account source, Account target) {

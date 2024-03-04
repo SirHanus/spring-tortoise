@@ -32,6 +32,13 @@ public class Account {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "source_account_id")
     private List<Transaction> transactions = new ArrayList<>();
 
+    public Account(@NonNull Long id, @NonNull String owner, @NonNull double balance, Transaction transaction) {
+        this.id = id;
+        this.owner = owner;
+        this.balance = balance;
+        this.transactions.add(transaction);
+    }
+
     public void updateAccount(Account newAccountDetails, Transaction transaction) {
         this.setOwner(newAccountDetails.getOwner());
         this.setBalance(newAccountDetails.getBalance());

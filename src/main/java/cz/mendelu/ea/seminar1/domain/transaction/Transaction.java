@@ -20,11 +20,11 @@ public class Transaction {
     @Min((0))
     private double amount;
 
-    @NotEmpty
+
     @JoinColumn(name = "source_account_id", nullable = false)
     private Long sourceAccountId;
 
-    @NotEmpty
+
     @JoinColumn(name = "target_account_id", nullable = false)
     private Long targetAccountId;
 
