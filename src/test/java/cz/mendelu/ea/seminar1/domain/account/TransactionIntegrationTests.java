@@ -42,7 +42,7 @@ public class TransactionIntegrationTests {
                 .get("/accounts/1")
                 .then()
                 .statusCode(200) // Assuming the account exists and is retrieved successfully
-                .body("balance", is(200.0));
+                .body("balance", is(200.0F));
 
     }
     @Test
