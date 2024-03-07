@@ -1,0 +1,10 @@
+### Create a new transaction
+POST http://localhost:8090/transactions
+Content-Type: application/json
+
+{
+  "id": -1,
+  "sourceAccountId": 1,
+  "targetAccountId": 2,
+  "amount": 100.0
+}
