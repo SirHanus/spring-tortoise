@@ -2,6 +2,7 @@ package cz.mendelu.ea.domain.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.mendelu.ea.domain.account.Account;
+import cz.mendelu.ea.domain.transaction.Transaction;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,8 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 @Data
 public class User {
@@ -41,11 +44,26 @@ public class User {
         this.accounts = new ArrayList<>();
     }
 
-    public User(){
+    public User() {
         this.accounts = new ArrayList<>();
     }
 
     public void addAccount(Account account) {
         this.accounts.add(account);
+    }
+
+    public double AverageTransactions() {
+        List<Transaction> l = this.accounts.stream().map(Account::getTransactions
+        ).flatMap(List::stream).toList();
+
+        OptionalDouble average =  l.stream().map(Transaction::getAmount).mapToDouble(Double::doubleValue).average();
+
+        if (average.isPresent()) {
+            return average.getAsDouble();
+        } else {
+            return -1;
+        }
+
+
     }
 }

@@ -31,11 +31,17 @@ public class UserResponse {
     @NotNull
     private List<Long> accountIDs;
 
+    @NotEmpty
+    private double average;
+
     public UserResponse(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.username = user.getUsername();
         this.accountIDs = user.getAccounts().stream().map(Account::getId).toList();
+        this.average = user.AverageTransactions();
     }
+
+
 
 }

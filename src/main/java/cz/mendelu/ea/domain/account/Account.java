@@ -41,11 +41,15 @@ public class Account {
     }
 
 
-    public void addUser(User user){
+    public void addUser(User user) {
         this.users.add(user);
     }
 
-    public int getTransactionCount(){
+    public int getTransactionCount() {
         return transactions.size();
+    }
+
+    public void addTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
     }
 }

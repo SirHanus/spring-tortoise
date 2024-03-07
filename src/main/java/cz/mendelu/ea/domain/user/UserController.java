@@ -1,5 +1,6 @@
 package cz.mendelu.ea.domain.user;
 
+import cz.mendelu.ea.domain.account.Account;
 import cz.mendelu.ea.domain.account.AccountService;
 import cz.mendelu.ea.utils.exceptions.NotFoundException;
 import cz.mendelu.ea.utils.reponse.ArrayResponse;
@@ -47,12 +48,11 @@ public class UserController {
     @PostMapping(value = "", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     @Valid
-    public ObjectResponse<UserResponse> createUser(@RequestBody @Valid UserRequest userRequest) {
+    public ObjectResponse<UserResponse> createAndAddUser(@RequestBody @Valid UserRequest userRequest) {
         User user = new User();
         userRequest.toUser(user, accountService);
-
+        userService.addUser(user);
         return new ObjectResponse<>(new UserResponse(user));
     }
-
 
 }

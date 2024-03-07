@@ -1,9 +1,7 @@
 package cz.mendelu.ea.domain.transaction;
 
 import cz.mendelu.ea.domain.account.Account;
-import cz.mendelu.ea.domain.account.AccountService;
 import cz.mendelu.ea.utils.exceptions.InsufficientBalanceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
