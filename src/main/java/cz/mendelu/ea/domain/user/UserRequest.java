@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,12 @@ public class UserRequest {
 //            inverseJoinColumns = @JoinColumn(name = "account_id")
 //    )
 
+
+    public UserRequest(String name, String username) {
+        this.name = name;
+        this.username = username;
+        this.accountIDs = new ArrayList<>();
+    }
 
     @NotNull
     private List<Long> accountIDs;

@@ -37,9 +37,9 @@ public class AccountIntegrationTest {
                 .get("/accounts")
         .then()
                 .statusCode(200)
-                .body("size()", is(2))
-                .body("[0].id", is(1))
-                .body("[0].owner", is("Ivo Pisarovic"))
+                .body("size()", is(10))
+                .body("[0].id", is(0))
+                .body("[0].owner", is("Jakub Novák"))
                 .body("[0].balance", is(100.0f));
     }
 
@@ -53,7 +53,7 @@ public class AccountIntegrationTest {
                 .post("/accounts")
         .then()
                 .statusCode(201)
-                .body("id", is(3))
+                .body("id", is(10))
                 .body("owner", is("Test Testovic"))
                 .body("balance", is(999.9f));
     }
@@ -79,8 +79,8 @@ public class AccountIntegrationTest {
         .then()
                 .statusCode(200)
                 .body("id", is(1))
-                .body("owner", is("Ivo Pisarovic"))
-                .body("balance", is(100.0f));
+                .body("owner", is("Eliška Svobodová"))
+                .body("balance", is(200.0f));
     }
 
     @Test

@@ -8,8 +8,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Transaction {
-
+public class TransactionRequest {
     @NotNull
     Long id;
 
@@ -18,15 +17,8 @@ public class Transaction {
     double amount;
 
     @NotNull
-    Account source;
+    Long source;
 
     @NotNull
-    Account target;
-
-    public Transaction(TransactionRequest transactionRequest, Account source, Account target) {
-        this.id = transactionRequest.getId();
-        this.amount = transactionRequest.getAmount();
-        this.source = source;
-        this.target = target;
-    }
+    Long target;
 }

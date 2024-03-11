@@ -19,27 +19,20 @@ public class UserResponse {
 
     @NotEmpty
     private String username;
-//
-//    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-//    @JoinTable(
-//            name = "user_account",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "account_id")
-//    )
 
+    @NotEmpty
+    private String average;
 
     @NotNull
     private List<Long> accountIDs;
 
-    @NotEmpty
-    private double average;
 
     public UserResponse(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.username = user.getUsername();
         this.accountIDs = user.getAccounts().stream().map(Account::getId).toList();
-        this.average = user.AverageTransactions();
+        this.average = user.averageTransactions();
     }
 
 

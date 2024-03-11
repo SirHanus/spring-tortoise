@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Transaction {
+public class TransactionResponse {
 
     @NotNull
     Long id;
@@ -23,10 +23,10 @@ public class Transaction {
     @NotNull
     Account target;
 
-    public Transaction(TransactionRequest transactionRequest, Account source, Account target) {
-        this.id = transactionRequest.getId();
-        this.amount = transactionRequest.getAmount();
-        this.source = source;
-        this.target = target;
+    public TransactionResponse(Transaction transaction) {
+        this.id = transaction.getId();
+        this.amount = transaction.getAmount();
+        this.source = transaction.getSource();
+        this.target = transaction.getTarget();
     }
 }

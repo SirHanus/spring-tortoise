@@ -12,9 +12,7 @@ POST http://localhost:8090/accounts
 Content-Type: application/json
 
 {
-  "id": -1,
-  "owner": "Ivo",
-  "balance": 1111.0
+  "ownerId": 1
 }
 
 ### Send POST request with invalid data

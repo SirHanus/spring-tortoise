@@ -30,6 +30,7 @@ public class TransactionIntegrationTest {
         RestAssured.port = port;
     }
 
+
     @Test
     public void testCreateTransaction() {
         Transaction newTransaction = new Transaction(-1L, 100.0, 1L, 2L);
@@ -44,8 +45,8 @@ public class TransactionIntegrationTest {
                 .statusCode(201);
 
         // check the balances have been updated
-        when().get("/accounts/1").then().body("balance", is(0.0f));
-        when().get("/accounts/2").then().body("balance", is(300.0f));
+        when().get("/accounts/1").then().body("balance", is(100.0f));
+        when().get("/accounts/2").then().body("balance", is(400.0f));
     }
 
     @Test

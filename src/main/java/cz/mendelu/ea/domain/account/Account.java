@@ -17,8 +17,8 @@ public class Account {
     @NotNull
     private Long id;
 
-    @NotEmpty
-    private String owner;
+    @NotNull
+    private User owner;
 
     @NotNull
     @Min(0)
@@ -32,9 +32,25 @@ public class Account {
     @JsonIgnore
     private List<User> users;
 
-    public Account(Long id, String owner, double balance) {
+    public Account() {
+        this.id = -1L;
+        this.owner = null;
+        this.balance = 0.0;
+        this.transactions = new ArrayList<>();
+        this.users = new ArrayList<>();
+    }
+
+    public Account(Long id, double balance) {
         this.id = id;
-        this.owner = owner;
+        this.owner = null;
+        this.balance = balance;
+        this.transactions = new ArrayList<>();
+        this.users = new ArrayList<>();
+    }
+
+    public Account(Long id, User user, double balance) {
+        this.id = id;
+        this.owner = user;
         this.balance = balance;
         this.transactions = new ArrayList<>();
         this.users = new ArrayList<>();

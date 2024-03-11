@@ -27,11 +27,15 @@ public class UserController {
         this.accountService = accountService;
         this.userService = userService;
     }
-
+    @GetMapping(value = "/size", produces = "application/json")
+    @Valid
+    public ObjectResponse<Integer> userCount() {
+        return new ObjectResponse<>(userService.getAllUsers().size());
+    }
 
     @GetMapping(value = "", produces = "application/json")
     @Valid
-    public ArrayResponse<UserResponse> getUser() {
+    public ArrayResponse<UserResponse> getUsers() {
         var userResponses = userService.getAllUsers().stream().map(UserResponse::new).toList();
 
         return new ArrayResponse<>(userResponses, userResponses.size());

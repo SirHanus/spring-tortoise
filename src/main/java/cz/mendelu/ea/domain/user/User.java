@@ -8,10 +8,10 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
-import java.util.stream.Collectors;
 
 @Data
 public class User {
@@ -52,16 +52,18 @@ public class User {
         this.accounts.add(account);
     }
 
-    public double AverageTransactions() {
-        List<Transaction> l = this.accounts.stream().map(Account::getTransactions
+    public String averageTransactions() {
+        List<Transaction> transactions = this.accounts.stream().map(Account::getTransactions
         ).flatMap(List::stream).toList();
 
-        OptionalDouble average =  l.stream().map(Transaction::getAmount).mapToDouble(Double::doubleValue).average();
+        OptionalDouble average =  transactions.stream().map(Transaction::getAmount).mapToDouble(Double::doubleValue).average();
 
         if (average.isPresent()) {
-            return average.getAsDouble();
+            double converted = average.getAsDouble();
+            DecimalFormat df = new DecimalFormat("#.00");
+            return df.format(converted);
         } else {
-            return -1;
+            return "-1";
         }
 
 
