@@ -12,16 +12,15 @@ import java.util.Optional;
 public class AccountRequest {
 
     @NotEmpty
-    private Integer ownerId;
+    private Long ownerId;
 
-    public AccountRequest(Integer id) {
-        this.ownerId = id;
+    public AccountRequest(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     //wtf kde je zbytek dat?
-    public void toAccount(Account account, UserService userService, AccountService accountService){
-        Optional<User> user = userService.getUser(Long.valueOf(this.ownerId));
+    public void toAccount(Account account, User user, AccountService accountService){
         account.setId((long) (accountService.getAllAccounts().size()-1));
-        user.ifPresent(account::setOwner);
+        account.setOwner(user);
     }
 }

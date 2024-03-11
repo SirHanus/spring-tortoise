@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -39,9 +40,16 @@ public class AccountController {
     @Valid
     public ObjectResponse<AccountResponse> createAccount(@RequestBody @Valid AccountRequest accountRequest) {
         Account account = new Account();
-        accountRequest.toAccount(account, userService, accountService);
-        accountService.addAccount(account);
-        return new ObjectResponse<>(new AccountResponse(account));
+        Optional<User> user = userService.getUser(accountRequest.getOwnerId());
+        if (user.isEmpty()){
+            throw new NotFoundException();
+        }
+        else {
+            accountRequest.toAccount(account, user.get(), accountService);
+            accountService.addAccount(account);
+            return new ObjectResponse<>(new AccountResponse(account));
+        }
+
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -57,10 +65,18 @@ public class AccountController {
     @Valid
     public ObjectResponse<AccountResponse> updateAccount(@PathVariable Long id, @RequestBody @Valid AccountRequest accountRequest) {
         Account account = new Account();
-        accountRequest.toAccount(account, userService, accountService);
+        Optional<User> user = userService.getUser(accountRequest.getOwnerId());
+        if (user.isEmpty()){
+            throw new NotFoundException();
+        }
+        else {
+        accountRequest.toAccount(account, user.get(), accountService);
         return new ObjectResponse<>(new AccountResponse(accountService
                 .updateAccount(id, account)
                 .orElseThrow(NotFoundException::new)));
+        }
+
+
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")

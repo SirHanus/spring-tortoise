@@ -87,12 +87,16 @@ public class Seeder {
         accountService.addAccount(account9);
         accountService.addAccount(account10);
 
-
-
-
-
-
-
+        user2.addAccount(account1);
+        user2.addAccount(account2);
+        user3.addAccount(account3);
+        user5.addAccount(account4);
+        user5.addAccount(account5);
+        user6.addAccount(account6);
+        user8.addAccount(account7);
+        user9.addAccount(account8);
+        user10.addAccount(account9);
+        user10.addAccount(account10);
 
 
         log.info("--- Default data seeded ---");

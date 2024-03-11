@@ -119,8 +119,8 @@ public class UserIntegrationTest {
                 .body("items[0].id", is(0)) // Assuming you want to check the ID as well
                 .body("items[0].name", is("Patrick"))
                 .body("items[0].username", is("patric2023"))
-                .body("items[0].average", is("175.00"))
-                .body("items[0].accountIDs[0]", is(0)); // Checks the first accountID of the first item
+                .body("items[0].average", is("-1"))
+                .body("items[1].accountIDs[0]", is(1)); // Checks the first accountID of the first item
     }
     @Test
     public void testGetUserById() {
@@ -132,8 +132,8 @@ public class UserIntegrationTest {
                 .body("content.id", is(2)) // Assuming you want to check the ID as well
                 .body("content.name", is("Alexander"))
                 .body("content.username", is("alexTheGreat"))
-                .body("content.average", is("75.00"))
-                .body("content.accountIDs[0]", is(2)); // Checks the first accountID of the first item
+                .body("content.average", is("90.00"))
+                .body("content.accountIDs[0]", is(3)); // Checks the first accountID of the first item
     }
 
     @Test
@@ -144,7 +144,7 @@ public class UserIntegrationTest {
                 .then()
                 .statusCode(200)
                 .body("content.id", is(4)) // Assuming you want to check the ID as well
-                .body("content.average", is("212.50"));
+                .body("content.average", is("250.00"));
     }
 
 

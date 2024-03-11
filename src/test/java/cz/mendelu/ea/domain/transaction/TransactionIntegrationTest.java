@@ -1,5 +1,7 @@
 package cz.mendelu.ea.domain.transaction;
 
+import cz.mendelu.ea.domain.account.Account;
+import cz.mendelu.ea.domain.user.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,61 +35,63 @@ public class TransactionIntegrationTest {
 
     @Test
     public void testCreateTransaction() {
-        Transaction newTransaction = new Transaction(-1L, 100.0, 1L, 2L);
+        TransactionRequest transactionRequest = new TransactionRequest(50L, 100.0, 1L, 2L);
 
         // process the transaction
         given()
                 .contentType(ContentType.JSON)
-                .body(newTransaction)
-        .when()
+                .body(transactionRequest)
+                .when()
                 .post("/transactions")
-        .then()
+                .then()
                 .statusCode(201);
 
         // check the balances have been updated
-        when().get("/accounts/1").then().body("balance", is(100.0f));
-        when().get("/accounts/2").then().body("balance", is(400.0f));
+        when().get("/accounts/1").then().body("content.balance", is(000.0f));
+        when().get("/accounts/2").then().body("content.balance", is(300.0f));
     }
 
     @Test
     public void testCreateTransaction_AccountNotFound() {
-        Transaction newTransaction = new Transaction(-1L, 100.0, 1L, 999L);
+        TransactionRequest newTransaction = new TransactionRequest(-1L, 100.0,
+                1L,
+                80L);
 
         // process the transaction
         given()
                 .contentType(ContentType.JSON)
                 .body(newTransaction)
-        .when()
+                .when()
                 .post("/transactions")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
     @Test
     public void testCreateTransaction_BadRequest() {
-        Transaction newTransaction = new Transaction(-1L, -100.0, 1L, 2L);
+        TransactionRequest newTransaction = new TransactionRequest(-1L, -100.0, 1L, 2L);
 
         // process the transaction
         given()
                 .contentType(ContentType.JSON)
                 .body(newTransaction)
-        .when()
+                .when()
                 .post("/transactions")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
     @Test
     public void testCreateTransaction_InsufficientResources() {
-        Transaction newTransaction = new Transaction(-1L, 1000.0, 1L, 2L);
+        TransactionRequest newTransaction = new TransactionRequest(-1L, 1000.0, 1L, 2L);
 
         // process the transaction
         given()
                 .contentType(ContentType.JSON)
                 .body(newTransaction)
-        .when()
+                .when()
                 .post("/transactions")
-        .then()
+                .then()
                 .statusCode(409);
     }
 
