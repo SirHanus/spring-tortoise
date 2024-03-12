@@ -1,71 +1,74 @@
 package cz.mendelu.ea.domain.account;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import cz.mendelu.ea.domain.transaction.Transaction;
 import cz.mendelu.ea.domain.user.User;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 @Data
+@NoArgsConstructor
 public class Account {
 
-    @NotNull
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private User owner;
+    @Transient
+    private User owner = new User(1L, "John", "Doe", List.of());
 
     @NotNull
     @Min(0)
     private double balance;
 
     @NotNull
-    @JsonIgnore
-    private List<Transaction> transactions;
+    @OneToMany(mappedBy = "sourceAccount")
+    private List<Transaction> outgoingTransactions = new ArrayList<>();
 
     @NotNull
-    @JsonIgnore
-    private List<User> users;
+    @OneToMany(mappedBy = "targetAccount")
+    private List<Transaction> incomingTransactions = new ArrayList<>();
 
-    public Account() {
-        this.id = -1L;
-        this.owner = null;
-        this.balance = 0.0;
-        this.transactions = new ArrayList<>();
-        this.users = new ArrayList<>();
-    }
+    @NotNull
+    @Transient
+    private List<User> users = new ArrayList<>();
 
-    public Account(Long id, double balance) {
+    public Account(Long id, User owner, double balance) {
         this.id = id;
-        this.owner = null;
         this.balance = balance;
-        this.transactions = new ArrayList<>();
-        this.users = new ArrayList<>();
-    }
-
-    public Account(Long id, User user, double balance) {
-        this.id = id;
-        this.owner = user;
-        this.balance = balance;
-        this.transactions = new ArrayList<>();
-        this.users = new ArrayList<>();
-    }
-
-
-    public void addUser(User user) {
-        this.users.add(user);
+        setOwner(owner);
     }
 
     public int getTransactionCount() {
-        return transactions.size();
+        return outgoingTransactions.size()+incomingTransactions.size();
     }
 
-    public void addTransaction(Transaction transaction) {
-        this.transactions.add(transaction);
+    public void attachUser(User user) {
+        this.users.add(user);
     }
+
+    public void setOwner(User owner) {
+        attachUser(owner);
+        this.owner = owner;
+    }
+
+    public void processTransaction(Transaction transaction) {
+        if (transaction.getSourceAccount().getId().equals(id)) {
+            balance -= transaction.getAmount();
+            outgoingTransactions.add(transaction);
+        } else if (transaction.getTargetAccount().getId().equals(id)) {
+            balance += transaction.getAmount();
+            incomingTransactions.add(transaction);
+        }
+
+    }
+
 }

@@ -1,8 +1,7 @@
 package cz.mendelu.ea.domain.transaction;
 
-import cz.mendelu.ea.domain.account.Account;
 import cz.mendelu.ea.domain.account.AccountService;
-import cz.mendelu.ea.utils.reponse.ObjectResponse;
+import cz.mendelu.ea.utils.response.ObjectResponse;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +28,12 @@ public class TransactionController {
     @ResponseStatus(HttpStatus.CREATED)
     @Valid
     public ObjectResponse<TransactionResponse> createTransaction(@RequestBody @Valid TransactionRequest transactionRequest) throws BadRequestException {
-        Account source = accountService
-                .getAccount(transactionRequest.getSource())
-                .orElseThrow(() -> new BadRequestException("Source account not found"));
-        Account target = accountService
-                .getAccount(transactionRequest.getTarget())
-                .orElseThrow(() -> new BadRequestException("Target account not found"));
+        Transaction transaction = new Transaction();
+        transactionRequest.toTransaction(transaction, accountService);
 
-        return new ObjectResponse<>(new TransactionResponse(transactionService.processTransaction(source, target, new Transaction(transactionRequest, source, target))));
+        transactionService.processTransaction(transaction);
+
+        return ObjectResponse.of(transaction, TransactionResponse::new);
     }
 
 }

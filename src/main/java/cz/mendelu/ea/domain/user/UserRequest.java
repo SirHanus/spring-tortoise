@@ -2,54 +2,41 @@ package cz.mendelu.ea.domain.user;
 
 import cz.mendelu.ea.domain.account.Account;
 import cz.mendelu.ea.domain.account.AccountService;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Data
+@AllArgsConstructor
 public class UserRequest {
 
     @NotEmpty
-    private String name;
+    String name;
 
     @NotEmpty
-    private String username;
-//
-//    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
-//    @JoinTable(
-//            name = "user_account",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "account_id")
-//    )
-
-
-    public UserRequest(String name, String username) {
-        this.name = name;
-        this.username = username;
-        this.accountIDs = new ArrayList<>();
-    }
+    @Length(min = 3)
+    String username;
 
     @NotNull
-    private List<Long> accountIDs;
+    List<Long> accountIds;
 
     public void toUser(User user, AccountService accountService) {
-        user.setName(this.name);
-        user.setUsername(this.username);
+        user.setName(name);
+        user.setUsername(username);
 
-        List<Account> accounts = accountIDs.stream()
+        // bidirectional relationship between User and Account
+        List<Account> accounts = accountIds.stream()
                 .map(accountService::getAccount)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
-
         user.setAccounts(accounts);
-        accounts.forEach(a -> a.addUser(user));
-
+        accounts.forEach(account -> account.attachUser(user));
     }
 
 }

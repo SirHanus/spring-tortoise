@@ -1,18 +1,14 @@
 package cz.mendelu.ea.domain.account;
 
-import cz.mendelu.ea.domain.user.User;
 import cz.mendelu.ea.domain.user.UserService;
 import cz.mendelu.ea.utils.exceptions.NotFoundException;
-import cz.mendelu.ea.utils.reponse.ArrayResponse;
-import cz.mendelu.ea.utils.reponse.ObjectResponse;
+import cz.mendelu.ea.utils.response.ArrayResponse;
+import cz.mendelu.ea.utils.response.ObjectResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @RestController
@@ -21,6 +17,7 @@ import java.util.Optional;
 public class AccountController {
 
     private final AccountService accountService;
+
     private final UserService userService;
 
     @Autowired
@@ -31,8 +28,11 @@ public class AccountController {
 
     @GetMapping(value = "", produces = "application/json")
     @Valid
-    public ArrayResponse<Account> getAccounts() {
-        return new ArrayResponse<>(accountService.getAllAccounts(), accountService.getAllAccounts().size());
+    public ArrayResponse<AccountResponse> getAccounts() {
+        return ArrayResponse.of(
+                accountService.getAllAccounts(),
+                AccountResponse::new
+        );
     }
 
     @PostMapping(value = "", produces = "application/json")
@@ -40,43 +40,33 @@ public class AccountController {
     @Valid
     public ObjectResponse<AccountResponse> createAccount(@RequestBody @Valid AccountRequest accountRequest) {
         Account account = new Account();
-        Optional<User> user = userService.getUser(accountRequest.getOwnerId());
-        if (user.isEmpty()){
-            throw new NotFoundException();
-        }
-        else {
-            accountRequest.toAccount(account, user.get(), accountService);
-            accountService.addAccount(account);
-            return new ObjectResponse<>(new AccountResponse(account));
-        }
+        accountRequest.toAccount(account, userService);
 
+        accountService.createAccount(account);
+
+        return ObjectResponse.of(account, AccountResponse::new);
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
     @Valid
     public ObjectResponse<AccountResponse> getAccount(@PathVariable Long id) {
-        return new ObjectResponse<>(new AccountResponse(accountService
+        Account account = accountService
                 .getAccount(id)
-                .orElseThrow(NotFoundException::new)));
+                .orElseThrow(NotFoundException::new);
+        return ObjectResponse.of(account, AccountResponse::new);
     }
 
     @PutMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Valid
     public ObjectResponse<AccountResponse> updateAccount(@PathVariable Long id, @RequestBody @Valid AccountRequest accountRequest) {
-        Account account = new Account();
-        Optional<User> user = userService.getUser(accountRequest.getOwnerId());
-        if (user.isEmpty()){
-            throw new NotFoundException();
-        }
-        else {
-        accountRequest.toAccount(account, user.get(), accountService);
-        return new ObjectResponse<>(new AccountResponse(accountService
-                .updateAccount(id, account)
-                .orElseThrow(NotFoundException::new)));
-        }
+        Account account = accountService.getAccount(id)
+                .orElseThrow(NotFoundException::new);
+        accountRequest.toAccount(account, userService);
 
+        accountService.updateAccount(id, account);
 
+        return ObjectResponse.of(account, AccountResponse::new);
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")

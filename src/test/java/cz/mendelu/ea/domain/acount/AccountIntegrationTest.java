@@ -1,8 +1,6 @@
 package cz.mendelu.ea.domain.acount;
 
-import cz.mendelu.ea.domain.account.Account;
 import cz.mendelu.ea.domain.account.AccountRequest;
-import cz.mendelu.ea.domain.user.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,14 +9,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ActiveProfiles("test")
 public class AccountIntegrationTest {
 
     private final static String BASE_URI = "http://localhost";
@@ -39,38 +40,60 @@ public class AccountIntegrationTest {
                 .get("/accounts")
         .then()
                 .statusCode(200)
-                .body("count", is(10))
-                .body("items[0].id", is(1))
-                .body("items[0].owner.name", is("Patrick"))
-                .body("items[0].balance", is(100.0f));
+                .body("items.size()", is(3))
+                .body("items.id", containsInAnyOrder(1, 2))
+                .body("items.ownerId", containsInAnyOrder(1,1))
+                .body("items.balance", containsInAnyOrder(100.0f, 200.0f));
     }
 
     @Test
     public void testCreateAccount() {
-        AccountRequest newAccount = new AccountRequest(1L);
-        given()
+        var newAccount = new AccountRequest(1L);
+        int id = given()
                 .contentType(ContentType.JSON)
                 .body(newAccount)
         .when()
                 .post("/accounts")
         .then()
                 .statusCode(201)
-                .body("id", is(10))
-                .body("owner.name", is("Test Testovic"))
-                .body("balance", is(999.9f));
+                .extract()
+                .path("content.id");
+
+
+        when()
+                .get("/accounts/"+id)
+        .then()
+                .statusCode(200)
+                .body("content.id", is(id))
+                .body("content.ownerId", is(1))
+                .body("content.balance", is(0.0f))
+                .body("content.transactionCount", is(0));
     }
 
     @Test
     public void testCreateAccount_BadRequest() {
-        AccountRequest newAccount = new AccountRequest(-1L);
+        var newStudent = new AccountRequest(null);
 
         given()
                 .contentType(ContentType.JSON)
-                .body(newAccount)
+                .body(newStudent)
         .when()
                 .post("/accounts")
         .then()
                 .statusCode(400);
+    }
+
+    @Test
+    public void testCreateAccount_OwnerNotFound() {
+        var newStudent = new AccountRequest(999L);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(newStudent)
+        .when()
+                .post("/accounts")
+                .then()
+                .statusCode(404);
     }
 
     @Test
@@ -81,8 +104,8 @@ public class AccountIntegrationTest {
         .then()
                 .statusCode(200)
                 .body("content.id", is(1))
-                .body("content.owner", is(0))
-                .body("content.balance", is(100.0f));
+                .body("content.ownerId", is(1))
+                .body("content.balance", is(40.0f));
     }
 
     @Test
@@ -94,44 +117,60 @@ public class AccountIntegrationTest {
                 .statusCode(404);
     }
 
-//    @Test
-//    public void testUpdateAccount() {
-//        AccountRequest newAccount = new AccountRequest(1);
-//        given()
-//                .contentType(ContentType.JSON)
-//                .body(newAccount)
-//        .when()
-//                .put("/accounts/1")
-//        .then()
-//                .statusCode(202)
-//                .body("id", is(1))
-//                .body("owner", is("Updated User"))
-//                .body("balance", is(999.9f));
-//    }
+    @Test
+    public void testUpdateAccount() {
+        var updatedAccount = new AccountRequest(2L);
+        given()
+                .contentType(ContentType.JSON)
+                .body(updatedAccount)
+        .when()
+                .put("/accounts/1")
+        .then()
+                .statusCode(202);
 
-//    @Test
-//    public void testUpdateAccount_NotFound() {
-//        AccountRequest newAccount = new AccountRequest(99);
-//        given()
-//                .contentType(ContentType.JSON)
-//                .body(newAccount)
-//        .when()
-//                .put("/accounts/999")
-//        .then()
-//                .statusCode(404);
-//    }
+        when()
+                .get("/accounts/1")
+        .then()
+                .body("content.id", is(1))
+                .body("content.ownerId", is(1))
+                .body("content.balance", is(40.0f));
+    }
 
-//    @Test
-//    public void testUpdateAccount_BadRequest() {
-//        AccountRequest updatedAccount = new AccountRequest(99);
-//        given()
-//                .contentType(ContentType.JSON)
-//                .body(updatedAccount)
-//        .when()
-//                .put("/accounts/1")
-//        .then()
-//                .statusCode(400);
-//    }
+    @Test
+    public void testUpdateAccount_NotFound() {
+        var updatedAccount = new AccountRequest(1L);
+        given()
+                .contentType(ContentType.JSON)
+                .body(updatedAccount)
+        .when()
+                .put("/accounts/999")
+        .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testUpdateAccount_BadRequest() {
+        var updatedAccount = new AccountRequest(null);
+        given()
+                .contentType(ContentType.JSON)
+                .body(updatedAccount)
+        .when()
+                .put("/accounts/1")
+        .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void testUpdateAccount_OwnerNotFound() {
+        var updatedAccount = new AccountRequest(999L);
+        given()
+                .contentType(ContentType.JSON)
+                .body(updatedAccount)
+        .when()
+                .put("/accounts/1")
+                .then()
+                .statusCode(404);
+    }
 
     @Test
     public void testDeleteAccount() {
@@ -140,6 +179,8 @@ public class AccountIntegrationTest {
                 .delete("/accounts/1")
         .then()
                 .statusCode(204);
+
+        when().get("/accounts/1").then().statusCode(404);
     }
 
 }

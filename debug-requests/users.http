@@ -1,9 +1,15 @@
-### SEND PUT with invalid data
+### Get all users
+GET http://localhost:8090/users
+
+### Get a user by id
+GET http://localhost:8090/users/1
+
+### Create a new user with some accounts
 POST http://localhost:8090/users
 Content-Type: application/json
 
 {
-  "name": "Tester",
-  "username": "Testeroni",
-  "accountIDs": [1]
+    "name": "Ivik",
+    "username": "user1",
+    "accountIds": [1, 2]
 }

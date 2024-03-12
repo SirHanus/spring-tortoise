@@ -1,6 +1,5 @@
 package cz.mendelu.ea.domain.transaction;
 
-import cz.mendelu.ea.domain.account.Account;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -18,15 +17,16 @@ public class TransactionResponse {
     double amount;
 
     @NotNull
-    Account source;
+    Long sourceAccountId;
 
     @NotNull
-    Account target;
+    Long targetAccountId;
 
     public TransactionResponse(Transaction transaction) {
         this.id = transaction.getId();
         this.amount = transaction.getAmount();
-        this.source = transaction.getSource();
-        this.target = transaction.getTarget();
+        this.sourceAccountId = transaction.getSourceAccount().getId();
+        this.targetAccountId = transaction.getTargetAccount().getId();
     }
+
 }

@@ -2,25 +2,26 @@ package cz.mendelu.ea.domain.account;
 
 import cz.mendelu.ea.domain.user.User;
 import cz.mendelu.ea.domain.user.UserService;
-import jakarta.validation.constraints.NotEmpty;
+import cz.mendelu.ea.utils.exceptions.NotFoundException;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccountRequest {
 
-    @NotEmpty
+    @NotNull
     private Long ownerId;
 
-    public AccountRequest(Long ownerId) {
-        this.ownerId = ownerId;
+    public void toAccount(Account account, UserService userService) {
+        User user = userService
+                .getUserById(ownerId)
+                .orElseThrow(NotFoundException::new);
+        account.setOwner(user);
+        user.attachAccount(account);
     }
 
-    //wtf kde je zbytek dat?
-    public void toAccount(Account account, User user, AccountService accountService){
-        account.setId((long) (accountService.getAllAccounts().size()-1));
-        account.setOwner(user);
-    }
 }

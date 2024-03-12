@@ -12,7 +12,7 @@ POST http://localhost:8090/accounts
 Content-Type: application/json
 
 {
-  "ownerId": 0
+  "ownerId": 1
 }
 
 ### Send POST request with invalid data
@@ -20,9 +20,15 @@ POST http://localhost:8090/accounts
 Content-Type: application/json
 
 {
-  "id": -1,
-  "owner": "Ivo",
-  "balance": -1111.0
+  "ownerId": null
+}
+
+### Send POST request with non-existing owner
+POST http://localhost:8090/accounts
+Content-Type: application/json
+
+{
+  "ownerId": 999
 }
 
 ### Send PUT request with json body
@@ -30,9 +36,7 @@ PUT http://localhost:8090/accounts/1
 Content-Type: application/json
 
 {
-  "id": 1,
-  "owner": "Ivo",
-  "balance": 2222.0
+  "ownerId": 2
 }
 
 ### Send PUT with non-existing id
@@ -40,9 +44,7 @@ PUT http://localhost:8090/accounts/999
 Content-Type: application/json
 
 {
-  "id": 999,
-  "owner": "Ivo",
-  "balance": 2222.0
+  "ownerId": 999
 }
 
 ### SEND PUT with invalid data
@@ -50,10 +52,8 @@ PUT http://localhost:8090/accounts/1
 Content-Type: application/json
 
 {
-  "id": 1,
-  "owner": "Ivo",
-  "balance": -2222.0
+  "owner": null
 }
 
 ### Send DELETE request
-DELETE http://localhost:8080/accounts/1
+DELETE http://localhost:8090/accounts/1

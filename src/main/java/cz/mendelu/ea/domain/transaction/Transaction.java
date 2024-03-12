@@ -1,32 +1,33 @@
 package cz.mendelu.ea.domain.transaction;
 
 import cz.mendelu.ea.domain.account.Account;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Entity
 @AllArgsConstructor
+@NoArgsConstructor
 public class Transaction {
 
-    @NotNull
-    Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
     @Min(0)
-    double amount;
+    private double amount;
 
     @NotNull
-    Account source;
+    @ManyToOne
+    private Account sourceAccount;
 
     @NotNull
-    Account target;
+    @ManyToOne
+    private Account targetAccount;
 
-    public Transaction(TransactionRequest transactionRequest, Account source, Account target) {
-        this.id = transactionRequest.getId();
-        this.amount = transactionRequest.getAmount();
-        this.source = source;
-        this.target = target;
-    }
 }

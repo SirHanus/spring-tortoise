@@ -3,8 +3,38 @@ POST http://localhost:8090/transactions
 Content-Type: application/json
 
 {
-  "id": -1,
   "sourceAccountId": 1,
   "targetAccountId": 2,
-  "amount": 100.0
+  "amount": 30.0
+}
+
+### Create a new transaction with non-existing source account
+POST http://localhost:8090/transactions
+Content-Type: application/json
+
+{
+  "sourceAccountId": 999,
+  "targetAccountId": 2,
+  "amount": 30.0
+}
+
+
+### Create a new transaction with insufficient balance
+POST http://localhost:8090/transactions
+Content-Type: application/json
+
+{
+  "sourceAccountId": 1,
+  "targetAccountId": 2,
+  "amount": 99999.0
+}
+
+### Create a new transaction with negative amount
+POST http://localhost:8090/transactions
+Content-Type: application/json
+
+{
+  "sourceAccountId": 1,
+  "targetAccountId": 2,
+  "amount": -30.0
 }

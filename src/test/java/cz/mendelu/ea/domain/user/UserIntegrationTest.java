@@ -1,27 +1,27 @@
 package cz.mendelu.ea.domain.user;
 
-import cz.mendelu.ea.domain.transaction.Transaction;
-import cz.mendelu.ea.utils.reponse.ArrayResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ActiveProfiles("test")
 public class UserIntegrationTest {
 
     private final static String BASE_URI = "http://localhost";
@@ -36,116 +36,68 @@ public class UserIntegrationTest {
     }
 
     @Test
-    public void testCreateUser() {
-        User user = new User(30L, "TomasTest", "TestTomas");
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(user)
-                .when()
-                .post("/users")
-                .then()
-                .statusCode(201);
-
-
-    }
-
-    @Test
-    public void testSize() {
-              given()
-                .when()
-                .get("/users/size")
-                .then()
-                .statusCode(200)
-                      .body("content", is(10));
-
-
-    }
-
-    @Test
-    public void testCreateUserWithInvalidInput() {
-        User invalidUser = new User(31L, "", ""); // Assuming empty username/password is invalid
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(invalidUser)
-                .when()
-                .post("/users")
-                .then()
-                .statusCode(400); // Expecting Bad Request due to invalid input
-    }
-
-    @Test
-    public void testCreateUserAndVerifyPresence() {
-        UserRequest newUser = new UserRequest( "NewUserTest", "PasswordTest");
-
-        given()
-                .contentType(ContentType.JSON)
-                .body(newUser)
-                .when()
-                .post("/users")
-                .then()
-                .statusCode(201);
-
-
-        Response response = given().when().get("/users/size").then().statusCode(200).extract().response();
-
-        int integer = response.jsonPath().getInt("content")-1;
-
-//
-//        given()
-//                .pathParam("id", integer)
-//                .when()
-//                .get("/users/{id}")
-//                .then()
-//                .statusCode(200)
-//                .body("name", is("NewUserTest"))
-//                .body("id", equalTo(integer));
-
-
-
-
-//        assertEquals("NewUserTest", lastUser.getUsername());
-
-    }
-    @Test
-    public void testGetAllUsers() {
-        given()
-                .when()
+    public void testGetUsers() {
+        when()
                 .get("/users")
-                .then()
+        .then()
                 .statusCode(200)
-                .body("count", is(10))
-                .body("items[0].id", is(0)) // Assuming you want to check the ID as well
-                .body("items[0].name", is("Patrick"))
-                .body("items[0].username", is("patric2023"))
-                .body("items[0].average", is("-1"))
-                .body("items[1].accountIDs[0]", is(1)); // Checks the first accountID of the first item
+                .body("items.size()", is(2))
+                .body("items.name", containsInAnyOrder("Ivo", "Marie"));
     }
+
     @Test
     public void testGetUserById() {
-        given()
-                .when()
-                .get("/users/2")
-                .then()
+        when()
+                .get("/users/1")
+        .then()
                 .statusCode(200)
-                .body("content.id", is(2)) // Assuming you want to check the ID as well
-                .body("content.name", is("Alexander"))
-                .body("content.username", is("alexTheGreat"))
-                .body("content.average", is("90.00"))
-                .body("content.accountIDs[0]", is(3)); // Checks the first accountID of the first item
+                .body("content.name", is("Ivo"))
+                .body("content.username", is("ivo"))
+                .body("content.accountIds", containsInAnyOrder(2))
+                .body("content.avgBalance", is(200.0f));
     }
 
     @Test
-    public void testUserAverageTransaction() {
-        given()
-                .when()
-                .get("/users/4")
-                .then()
-                .statusCode(200)
-                .body("content.id", is(4)) // Assuming you want to check the ID as well
-                .body("content.average", is("250.00"));
+    public void testGetUserById_NotFound() {
+        when()
+                .get("/users/999")
+        .then()
+                .statusCode(404);
     }
 
+    @Test
+    public void testCreateUser() {
+        var userRequest = new UserRequest("John Doe", "johndoe", List.of(1L, 2L, 999L));
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(userRequest)
+        .when()
+                .post("/users")
+        .then()
+                .statusCode(201)
+                .body("content.id", is(3));
+
+        when()
+                .get("/users/3")
+        .then()
+                .statusCode(200)
+                .body("content.name", is("John Doe"))
+                .body("content.username", is("johndoe"))
+                .body("content.accountIds", containsInAnyOrder(1, 2));
+    }
+
+    @Test
+    public void testCreateUser_BadRequest() {
+        var userRequest = new UserRequest("John Doe", "jo", List.of(1L, 2L, 999L)); // too short username
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(userRequest)
+        .when()
+                .post("/users")
+        .then()
+                .statusCode(400);
+    }
 
 }

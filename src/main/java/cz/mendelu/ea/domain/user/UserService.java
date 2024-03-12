@@ -1,8 +1,5 @@
 package cz.mendelu.ea.domain.user;
 
-import cz.mendelu.ea.domain.account.AccountService;
-import cz.mendelu.ea.utils.exceptions.DuplicateObjectException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,28 +9,26 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private final List<User> users = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
-
-
-    public void addUser(User user){
-        if (users.stream().map(User::getId).toList().contains(user.getId())){
-            throw new DuplicateObjectException();
-        }
-
-        user.setId((long) users.size());
-        this.users.add(user);
-    }
     public List<User> getAllUsers() {
-        return this.users;
+        return users;
     }
 
-    public Optional<User> getUser(Long id) {
-        return this.getAllUsers().stream()
-                .filter(account -> account.getId().equals(id))
+    public Optional<User> getUserById(Long id) {
+        return users.stream()
+                .filter(user -> user.getId().equals(id))
                 .findFirst();
     }
 
-
+    public User createUser(User user) {
+        Long maxId = users.stream()
+                .map(User::getId)
+                .max(Long::compareTo)
+                .orElse(0L);
+        user.setId(maxId + 1);
+        users.add(user);
+        return user;
+    }
 
 }
