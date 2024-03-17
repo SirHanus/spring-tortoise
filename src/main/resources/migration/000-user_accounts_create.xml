@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="3" author="Pat">
+        <!-- Creation of the junction table for the many-to-many relationship between User and Account -->
+        <createTable tableName="user_accounts">
+            <!-- Column for the foreign key to the User table -->
+            <column name="user_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <!-- Column for the foreign key to the Account table -->
+            <column name="account_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <!-- Add foreign key constraints -->
+        <addForeignKeyConstraint constraintName="fk_user_account_user_id"
+                                 baseTableName="user_accounts" baseColumnNames="user_id"
+                                 referencedTableName="user" referencedColumnNames="id"/>
+        <addForeignKeyConstraint constraintName="fk_user_account_account_id"
+                                 baseTableName="user_accounts" baseColumnNames="account_id"
+                                 referencedTableName="account" referencedColumnNames="id"/>
+        <!-- Setting the composite primary key -->
+        <addPrimaryKey constraintName="pk_user_account"
+                       tableName="user_accounts"
+                       columnNames="user_id, account_id"/>
+        <!-- Optional: if you want to enforce unique pairs, add a unique constraint -->
+        <addUniqueConstraint tableName="user_accounts"
+                             columnNames="user_id, account_id"
+                             constraintName="unique_user_account"/>
+    </changeSet>
+</databaseChangeLog>

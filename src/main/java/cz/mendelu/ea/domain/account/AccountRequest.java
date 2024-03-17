@@ -16,6 +16,9 @@ public class AccountRequest {
     @NotNull
     private Long ownerId;
 
+    @NotNull
+    private String name;
+
     public void toAccount(Account account, UserService userService) {
         User user = userService
                 .getUserById(ownerId)

@@ -9,26 +9,24 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private List<User> users = new ArrayList<>();
+   private final UserRepository repository;
+
+    public UserService(UserRepository repository) {
+        this.repository = repository;
+    }
 
     public List<User> getAllUsers() {
+        List<User> users = new ArrayList<>();
+        repository.findAll().forEach(users::add);
         return users;
     }
 
     public Optional<User> getUserById(Long id) {
-        return users.stream()
-                .filter(user -> user.getId().equals(id))
-                .findFirst();
+        return repository.findById(id);
     }
 
     public User createUser(User user) {
-        Long maxId = users.stream()
-                .map(User::getId)
-                .max(Long::compareTo)
-                .orElse(0L);
-        user.setId(maxId + 1);
-        users.add(user);
-        return user;
+        return repository.save(user);
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
-    private List<Account> accounts = new ArrayList<>();
+
     private final AccountRepository repository;
 
     public AccountService(AccountRepository repository) {

@@ -27,16 +27,16 @@ public class Seeder {
     }
     @PostConstruct
     public void seedDefaultData() {
+        if (!shouldSeedData()){
+            return;
+        }
         User user1 = new User(1L, "Ivo", "ivo", new ArrayList<>());
         User user2 = new User(2L, "Marie", "mar777", new ArrayList<>());
         userService.createUser(user1);
         userService.createUser(user2);
 
-        if (!shouldSeedData()){
-            return;
-        }
-        Account account1 = new Account(1L, user1, 100.0);
-        Account account2 = new Account(2L, user2, 200.0);
+        Account account1 = new Account(1L, user1, 100.0, "Account1");
+        Account account2 = new Account(2L, user2, 200.0, "Account2");
         accountService.createAccount(account1);
         accountService.createAccount(account2);
 

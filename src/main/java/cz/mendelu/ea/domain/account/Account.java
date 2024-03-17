@@ -30,6 +30,9 @@ public class Account {
     private double balance;
 
     @NotNull
+    private String name;
+
+    @NotNull
     @OneToMany(mappedBy = "sourceAccount")
     private List<Transaction> outgoingTransactions = new ArrayList<>();
 
@@ -38,13 +41,15 @@ public class Account {
     private List<Transaction> incomingTransactions = new ArrayList<>();
 
     @NotNull
-    @Transient
+    @ManyToMany(mappedBy = "accounts")
     private List<User> users = new ArrayList<>();
 
-    public Account(Long id, User owner, double balance) {
+
+    public Account(Long id, User owner, double balance, String name) {
         this.id = id;
         this.balance = balance;
         setOwner(owner);
+        this.name = name;
     }
 
     public int getTransactionCount() {

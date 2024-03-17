@@ -8,17 +8,18 @@
         http://www.liquibase.org/xml/ns/dbchangelog-ext
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
     <changeSet id="1" author="Pat">
-        <createTable tableName="account">
+        <createTable tableName="user">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
             <column name="balance" type="decimal(10,2)"/>
             <column name="name" type="varchar(255)"> <!-- Assuming a max length of 255 characters -->
-                <constraints nullable="true"/> <!-- Adjust this based on whether the name can be null -->
+                <constraints nullable="false"/> <!-- Adjust this based on whether the name can be null -->
             </column>
-
-
+            <column name="username" type="varchar(255)"> <!-- Assuming a max length of 255 characters -->
+                <constraints nullable="false"/> <!-- Adjust this based on whether the name can be null -->
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>

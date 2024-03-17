@@ -14,6 +14,9 @@ public class AccountResponse {
     private Long ownerId;
 
     @NotNull
+    private String name;
+
+    @NotNull
     @Min(0)
     private double balance;
 
