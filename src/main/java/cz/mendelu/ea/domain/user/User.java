@@ -34,7 +34,7 @@ public class User {
     @ManyToMany
     List<Account> accounts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     List<Account> ownedAccounts = new ArrayList<>();
 
     public User(String name, String username) {

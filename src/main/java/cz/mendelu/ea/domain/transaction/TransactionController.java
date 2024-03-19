@@ -1,6 +1,9 @@
 package cz.mendelu.ea.domain.transaction;
 
 import cz.mendelu.ea.domain.account.AccountService;
+import cz.mendelu.ea.domain.user.User;
+import cz.mendelu.ea.domain.user.UserResponse;
+import cz.mendelu.ea.utils.exceptions.NotFoundException;
 import cz.mendelu.ea.utils.response.ObjectResponse;
 import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
@@ -8,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("transactions")
@@ -34,6 +40,13 @@ public class TransactionController {
         transactionService.processTransaction(transaction);
 
         return ObjectResponse.of(transaction, TransactionResponse::new);
+    }
+
+    @GetMapping(value = "/{id}", produces = "application/json")
+    @Valid
+    public ObjectResponse<TransactionResponse> getUserById(@PathVariable UUID id) {
+       Transaction t = transactionService.getById(id).orElseThrow(NotFoundException::new);
+        return ObjectResponse.of(t, TransactionResponse::new);
     }
 
 }

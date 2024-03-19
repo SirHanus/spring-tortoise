@@ -38,3 +38,9 @@ Content-Type: application/json
   "targetAccountId": 2,
   "amount": -30.0
 }
+
+### Get transaction
+GET http://localhost:8090/transactions/4c83e35a-9e96-4961-b617-99ebd08d82e6
+
+### Get transaction - incorrect UUID
+GET http://localhost:8090/transactions/4c83e35a-9e96-4961-b617-99ebd08d82e8

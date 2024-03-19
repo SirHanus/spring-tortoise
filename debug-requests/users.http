@@ -13,3 +13,6 @@ Content-Type: application/json
     "username": "user1",
     "accountIds": [1, 2]
 }
+
+### Delete user - musí se čitst kaskádově
+DELETE http://localhost:8090/users/1
