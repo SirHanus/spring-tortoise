@@ -16,8 +16,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -103,6 +102,68 @@ public class UserIntegrationTest {
                 .post("/users")
         .then()
                 .statusCode(400);
+    }
+
+
+    @Test
+    public void testCreateAndDeleteUser() {
+        var userRequest = new UserRequest("John Doe", "johndoe", List.of(1L, 2L, 999L));
+
+        int id = given()
+                .contentType(ContentType.JSON)
+                .body(userRequest)
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("content.id");
+
+        when()
+                .get("/users/" + id)
+                .then()
+                .statusCode(200)
+                .body("content.name", is("John Doe"))
+                .body("content.username", is("johndoe"))
+                .body("content.accountIds", containsInAnyOrder(1, 2));
+
+
+        when()
+                .delete("/users/"+id)
+                .then()
+                .statusCode(204);
+
+        when()
+                .get("/users/" + id)
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testDeleteUser() {
+        when()
+                .delete("/users/1")
+                .then()
+                .statusCode(204);
+
+        // user is deleted
+        when().get("/users/1").then().statusCode(404);
+
+        // also his owned accounts are deleted
+        when().get("/accounts/1").then().statusCode(404);
+
+        // but not the account he is just a user of
+        when().get("/accounts/2").then().statusCode(200);
+
+        // transactions attached to the deleted account have nulls instead of the deleted account
+        when().get("/transactions/fffd85db-55c5-4620-b7eb-73191a43533e").then()
+                .statusCode(200)
+                .body("content.sourceAccountId", is(nullValue()))
+                .body("content.targetAccountId", is(2));
+        when().get("/transactions/5fdba127-ab33-4881-bcf8-096e210fe7c9").then()
+                .statusCode(200)
+                .body("content.sourceAccountId", is(2))
+                .body("content.targetAccountId", is(nullValue()));
     }
 
 }

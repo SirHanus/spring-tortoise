@@ -49,10 +49,10 @@ public class TransactionIntegrationTest {
         // check the balances have been updated
         when().get("/accounts/1").then()
                 .body("content.balance", is(0.0f))
-                .body("content.transactionCount", is(1));
+                .body("content.transactionCount", is(3));
         when().get("/accounts/2").then()
                 .body("content.balance", is(300.0f))
-                .body("content.transactionCount", is(1));
+                .body("content.transactionCount", is(3));
     }
 
     @Test
@@ -96,6 +96,8 @@ public class TransactionIntegrationTest {
         .then()
                 .statusCode(409);
     }
+
+
 
 
 }

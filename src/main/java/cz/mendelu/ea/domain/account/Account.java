@@ -70,4 +70,14 @@ public class Account {
         }
     }
 
+    @PreRemove
+    public void detachTransactionsFromAccount(){
+        for (Transaction transaction : incomingTransactions) {
+            transaction.setTargetAccount(null);
+        }
+        for (Transaction transaction : outgoingTransactions) {
+            transaction.setSourceAccount(null);
+        }
+    }
+
 }

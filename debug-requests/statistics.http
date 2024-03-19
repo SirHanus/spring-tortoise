@@ -1,0 +1,2 @@
+### Get statistics
+GET http://localhost:8090/statistics

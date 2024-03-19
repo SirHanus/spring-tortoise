@@ -27,8 +27,14 @@ public class TransactionResponse {
     public TransactionResponse(Transaction transaction) {
         this.id = transaction.getId();
         this.amount = transaction.getAmount();
-        this.sourceAccountId = transaction.getSourceAccount().getId();
-        this.targetAccountId = transaction.getTargetAccount().getId();
+
+        if (transaction.getSourceAccount() != null) {
+            this.sourceAccountId = transaction.getSourceAccount().getId();
+        }
+
+        if (transaction.getTargetAccount() != null) {
+            this.targetAccountId = transaction.getTargetAccount().getId();
+        }
     }
 
 }
