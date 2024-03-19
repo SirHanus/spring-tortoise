@@ -1,6 +1,7 @@
 package cz.mendelu.ea.domain.user;
 
 import cz.mendelu.ea.domain.account.Account;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -8,15 +9,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "\"user\"")
 public class User {
 
-    @NotNull
-    Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotEmpty
     String name;
@@ -26,10 +31,20 @@ public class User {
     String username;
 
     @NotNull
-    List<Account> accounts;
+    @ManyToMany
+    List<Account> accounts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "owner")
+    List<Account> ownedAccounts = new ArrayList<>();
+
+    public User(String name, String username) {
+        this.name = name;
+        this.username = username;
+    }
 
     public void attachAccount(Account account) {
         this.accounts.add(account);
+        account.getUsers().add(this);
     }
 
 }

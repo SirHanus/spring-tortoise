@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -18,10 +19,11 @@ import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@ActiveProfiles("test")
+@Sql("/test-data/cleanup.sql")
+@Sql("/test-data/base-data.sql")
 public class UserIntegrationTest {
 
     private final static String BASE_URI = "http://localhost";
@@ -42,7 +44,9 @@ public class UserIntegrationTest {
         .then()
                 .statusCode(200)
                 .body("items.size()", is(2))
-                .body("items.name", containsInAnyOrder("Ivo", "Marie"));
+                .body("items.name", containsInAnyOrder("Ivo", "Marie"))
+                .body("items.username", containsInAnyOrder("ivo", "mar777"))
+                .body("items.accountIds", containsInAnyOrder(List.of(1, 2), List.of(2)));
     }
 
     @Test
@@ -53,8 +57,8 @@ public class UserIntegrationTest {
                 .statusCode(200)
                 .body("content.name", is("Ivo"))
                 .body("content.username", is("ivo"))
-                .body("content.accountIds", containsInAnyOrder(2))
-                .body("content.avgBalance", is(200.0f));
+                .body("content.accountIds", is(List.of(1, 2)))
+                .body("content.avgBalance", is(150.0f));
     }
 
     @Test
@@ -69,17 +73,18 @@ public class UserIntegrationTest {
     public void testCreateUser() {
         var userRequest = new UserRequest("John Doe", "johndoe", List.of(1L, 2L, 999L));
 
-        given()
+        int id = given()
                 .contentType(ContentType.JSON)
                 .body(userRequest)
         .when()
                 .post("/users")
         .then()
                 .statusCode(201)
-                .body("content.id", is(3));
+        .extract()
+                .path("content.id");
 
         when()
-                .get("/users/3")
+                .get("/users/" + id)
         .then()
                 .statusCode(200)
                 .body("content.name", is("John Doe"))

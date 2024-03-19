@@ -4,6 +4,7 @@ import cz.mendelu.ea.domain.transaction.Transaction;
 import cz.mendelu.ea.domain.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,14 +17,16 @@ import java.util.List;
 @NoArgsConstructor
 public class Account {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    @Transient
-    private User owner = new User(1L, "John", "Doe", List.of());
+    @ManyToOne
+    private User owner;
+
+    @NotEmpty
+    private String name;
 
     @NotNull
     @Min(0)
@@ -38,26 +41,23 @@ public class Account {
     private List<Transaction> incomingTransactions = new ArrayList<>();
 
     @NotNull
-    @Transient
+    @ManyToMany(mappedBy = "accounts")
     private List<User> users = new ArrayList<>();
 
-    public Account(Long id, User owner, double balance) {
-        this.id = id;
+    public Account(User owner, String name, double balance) {
+        this.name = name;
         this.balance = balance;
         setOwner(owner);
     }
 
     public int getTransactionCount() {
-        return outgoingTransactions.size()+incomingTransactions.size();
-    }
-
-    public void attachUser(User user) {
-        this.users.add(user);
+        return incomingTransactions.size() + outgoingTransactions.size();
     }
 
     public void setOwner(User owner) {
-        attachUser(owner);
+        owner.attachAccount(this);
         this.owner = owner;
+        owner.getOwnedAccounts().add(this);
     }
 
     public void processTransaction(Transaction transaction) {
@@ -68,7 +68,6 @@ public class Account {
             balance += transaction.getAmount();
             incomingTransactions.add(transaction);
         }
-
     }
 
 }

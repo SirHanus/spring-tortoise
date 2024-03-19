@@ -72,7 +72,16 @@ public class AccountController {
     @DeleteMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccount(@PathVariable Long id) {
-        accountService.deleteAccount(id);
+        accountService
+                .getAccount(id)
+                .ifPresent(account -> {
+                    // remove account from user before deleting
+                    // we will refactor this in the future to use cascades
+                    account.getOwner().getAccounts().remove(account);
+                    userService.updateUser(account.getOwner().getId(), account.getOwner());
+
+                    accountService.deleteAccount(id);
+                });
     }
 
 }

@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transaction {
@@ -20,14 +20,12 @@ public class Transaction {
 
     @NotNull
     @Min(0)
-    private double amount;
+    double amount;
 
-    @NotNull
     @ManyToOne
-    private Account sourceAccount;
+    Account sourceAccount;
 
-    @NotNull
     @ManyToOne
-    private Account targetAccount;
+    Account targetAccount;
 
 }

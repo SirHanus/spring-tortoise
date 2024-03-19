@@ -8,8 +8,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 @Slf4j
 public class Seeder {
@@ -22,26 +20,31 @@ public class Seeder {
         this.userService = userService;
     }
 
-    private boolean shouldSeedData(){
+    private boolean shouldSeedData() {
         return accountService.getAllAccounts().isEmpty();
     }
+
     @PostConstruct
     public void seedDefaultData() {
-        User user1 = new User(1L, "Ivo", "ivo", new ArrayList<>());
-        User user2 = new User(2L, "Marie", "mar777", new ArrayList<>());
+        if (!shouldSeedData()) {
+            log.info("--- Default data already seeded ---");
+            return;
+        }
+
+        User user1 = new User("Ivo", "ivo");
+        User user2 = new User("Marie", "mar777");
         userService.createUser(user1);
         userService.createUser(user2);
 
-        if (!shouldSeedData()){
-            return;
-        }
-        Account account1 = new Account(1L, user1, 100.0);
-        Account account2 = new Account(2L, user2, 200.0);
+        Account account1 = new Account(user1, "My account", 100.0);
+        Account account2 = new Account(user2, "Savings for a car", 200.0);
+        user1.attachAccount(account2);
+
         accountService.createAccount(account1);
         accountService.createAccount(account2);
 
-        user1.attachAccount(account2);
-        account2.attachUser(user1);
+        userService.updateUser(user1.getId(), user1);
+        userService.updateUser(user2.getId(), user2);
 
         log.info("--- Default data seeded ---");
     }

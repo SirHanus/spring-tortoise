@@ -1,5 +1,6 @@
 package cz.mendelu.ea.domain.account;
 
+import cz.mendelu.ea.utils.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,16 +10,15 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
-    private List<Account> accounts = new ArrayList<>();
-    private final AccountRepository repository;
+    private AccountRepository repository;
 
     public AccountService(AccountRepository repository) {
         this.repository = repository;
     }
 
     public List<Account> getAllAccounts() {
-        List<Account> accounts = new ArrayList<Account>();
-        repository.findAll().forEach(accounts::add);
+        List<Account> accounts = new ArrayList<>();
+        repository.findAll().forEach(accounts::add); // must convert iterable to list
         return accounts;
     }
 
@@ -31,7 +31,6 @@ public class AccountService {
     }
 
     public Account updateAccount(Long id, Account account) {
-
         account.setId(id);
         return repository.save(account);
     }

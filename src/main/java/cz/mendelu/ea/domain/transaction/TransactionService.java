@@ -10,10 +10,10 @@ import java.util.List;
 @Service
 public class TransactionService {
 
-    private final TransactionRepository transactionRepository;
+    private TransactionRepository repository;
 
-    public TransactionService(TransactionRepository transactionRepository) {
-        this.transactionRepository = transactionRepository;
+    public TransactionService(TransactionRepository repository) {
+        this.repository = repository;
     }
 
     public Transaction processTransaction(Transaction transaction) {
@@ -25,18 +25,14 @@ public class TransactionService {
             throw new InsufficientBalanceException();
         }
 
-
-
         // process transaction in accounts
         source.processTransaction(transaction);
         target.processTransaction(transaction);
 
         // store transaction to have a complete history of all transactions
+        repository.save(transaction);
 
-
-        return transactionRepository.save(transaction);
+        return transaction;
     }
-
-
 
 }

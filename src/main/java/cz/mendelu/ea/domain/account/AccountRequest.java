@@ -3,6 +3,7 @@ package cz.mendelu.ea.domain.account;
 import cz.mendelu.ea.domain.user.User;
 import cz.mendelu.ea.domain.user.UserService;
 import cz.mendelu.ea.utils.exceptions.NotFoundException;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,12 +17,15 @@ public class AccountRequest {
     @NotNull
     private Long ownerId;
 
+    @NotEmpty
+    private String name;
+
     public void toAccount(Account account, UserService userService) {
+        account.setName(name);
         User user = userService
                 .getUserById(ownerId)
                 .orElseThrow(NotFoundException::new);
         account.setOwner(user);
-        user.attachAccount(account);
     }
 
 }

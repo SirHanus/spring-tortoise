@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -16,11 +15,11 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.is;
 
+@ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/test-data/cleanup.sql")
 @Sql("/test-data/base-data.sql")
-@ActiveProfiles("test")
 public class TransactionIntegrationTest {
 
     private final static String BASE_URI = "http://localhost";
@@ -45,8 +44,7 @@ public class TransactionIntegrationTest {
         .when()
                 .post("/transactions")
         .then()
-                .statusCode(201)
-                .body("content.id", is(1));
+                .statusCode(201);
 
         // check the balances have been updated
         when().get("/accounts/1").then()

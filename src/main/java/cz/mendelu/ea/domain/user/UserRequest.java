@@ -35,8 +35,7 @@ public class UserRequest {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
-        user.setAccounts(accounts);
-        accounts.forEach(account -> account.attachUser(user));
+        accounts.forEach(user::attachAccount);
     }
 
 }
