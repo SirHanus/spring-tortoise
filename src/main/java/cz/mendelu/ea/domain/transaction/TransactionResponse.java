@@ -18,10 +18,8 @@ public class TransactionResponse {
     @Min(0)
     double amount;
 
-    @NotNull
     Long sourceAccountId;
 
-    @NotNull
     Long targetAccountId;
 
     public TransactionResponse(Transaction transaction) {

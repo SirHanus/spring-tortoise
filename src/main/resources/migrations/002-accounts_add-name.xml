@@ -10,7 +10,7 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
     <changeSet id="1" author="Ivo">
         <addColumn tableName="account">
-            <column name="name" type="varchar(255)"/>
+            <column name="name" type="varchar(255)" />
         </addColumn>
     </changeSet>
 </databaseChangeLog>

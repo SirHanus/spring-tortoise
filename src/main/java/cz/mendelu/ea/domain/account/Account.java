@@ -71,7 +71,7 @@ public class Account {
     }
 
     @PreRemove
-    public void detachTransactionsFromAccount(){
+    public void detachAccountFromTransactions() {
         for (Transaction transaction : incomingTransactions) {
             transaction.setTargetAccount(null);
         }

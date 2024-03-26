@@ -97,7 +97,32 @@ public class TransactionIntegrationTest {
                 .statusCode(409);
     }
 
+    @Test
+    public void testGetTransactionById() {
+        when()
+                .get("/transactions/fffd85db-55c5-4620-b7eb-73191a43533e")
+        .then()
+                .statusCode(200)
+                .body("content.amount", is(50.0f))
+                .body("content.sourceAccountId", is(1))
+                .body("content.targetAccountId", is(2));
+    }
 
+    @Test
+    public void testGetTransactionById_NotFound() {
+        when()
+                .get("/transactions/fffd85db-55c5-4620-b7eb-73191a43520e")
+        .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testGetTransactionById_BadRequest() {
+        when()
+                .get("/transactions/123")
+        .then()
+                .statusCode(400);
+    }
 
 
 }

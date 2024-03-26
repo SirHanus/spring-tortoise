@@ -4,6 +4,7 @@ import cz.mendelu.ea.domain.user.UserService;
 import cz.mendelu.ea.utils.exceptions.NotFoundException;
 import cz.mendelu.ea.utils.response.ArrayResponse;
 import cz.mendelu.ea.utils.response.ObjectResponse;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,6 +60,7 @@ public class AccountController {
     @PutMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @Valid
+    @Transactional
     public ObjectResponse<AccountResponse> updateAccount(@PathVariable Long id, @RequestBody @Valid AccountRequest accountRequest) {
         Account account = accountService.getAccount(id)
                 .orElseThrow(NotFoundException::new);

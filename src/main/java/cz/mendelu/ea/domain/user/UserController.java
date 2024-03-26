@@ -65,7 +65,6 @@ public class UserController {
         return ObjectResponse.of(user, UserResponse::new);
     }
 
-
     @DeleteMapping(value = "/{id}", produces = "application/json")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long id) {

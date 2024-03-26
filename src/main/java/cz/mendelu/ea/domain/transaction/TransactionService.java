@@ -2,10 +2,10 @@ package cz.mendelu.ea.domain.transaction;
 
 import cz.mendelu.ea.domain.account.Account;
 import cz.mendelu.ea.utils.exceptions.InsufficientBalanceException;
+import cz.mendelu.ea.utils.exceptions.NotFoundException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,7 +37,7 @@ public class TransactionService {
         return transaction;
     }
 
-    public Optional<Transaction> getById(UUID id){
+    public Optional<Transaction> getById(UUID id) {
         return repository.findById(id);
     }
 

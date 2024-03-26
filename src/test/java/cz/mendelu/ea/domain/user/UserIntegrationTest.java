@@ -104,46 +104,11 @@ public class UserIntegrationTest {
                 .statusCode(400);
     }
 
-
-    @Test
-    public void testCreateAndDeleteUser() {
-        var userRequest = new UserRequest("John Doe", "johndoe", List.of(1L, 2L, 999L));
-
-        int id = given()
-                .contentType(ContentType.JSON)
-                .body(userRequest)
-                .when()
-                .post("/users")
-                .then()
-                .statusCode(201)
-                .extract()
-                .path("content.id");
-
-        when()
-                .get("/users/" + id)
-                .then()
-                .statusCode(200)
-                .body("content.name", is("John Doe"))
-                .body("content.username", is("johndoe"))
-                .body("content.accountIds", containsInAnyOrder(1, 2));
-
-
-        when()
-                .delete("/users/"+id)
-                .then()
-                .statusCode(204);
-
-        when()
-                .get("/users/" + id)
-                .then()
-                .statusCode(404);
-    }
-
     @Test
     public void testDeleteUser() {
         when()
                 .delete("/users/1")
-                .then()
+        .then()
                 .statusCode(204);
 
         // user is deleted

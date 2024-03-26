@@ -4,8 +4,10 @@ import cz.mendelu.ea.domain.account.AccountRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
@@ -16,6 +18,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -187,5 +190,6 @@ public class AccountIntegrationTest {
 
         when().get("/accounts/1").then().statusCode(404);
     }
+
 
 }
