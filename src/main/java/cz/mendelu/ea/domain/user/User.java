@@ -38,8 +38,8 @@ public class User {
     @EqualsAndHashCode.Exclude
     Set<Account> accounts = new HashSet<>();
 
-    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
     Set<Account> ownedAccounts = new HashSet<>();
 
     public User(String name, String username) {

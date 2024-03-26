@@ -43,7 +43,15 @@ public class StatisticsIntegrationTest {
                 .statusCode(200)
                 .body("content.numberOfAccountsWithBalanceGreaterThan150", is(1))
                 .body("content.namesOf3UsersWithHighestBalance", contains("Marie", "Ivo"))
-                .body("content.numberOfAccountsWithAverageOutgoingTransactionGreaterThan100", is(1));
+                .body("content.numberOfAccountsWithAverageOutgoingTransactionGreaterThan100", is(1))
+                .body("content.countOfTransactionsLessThan100", is(1))
+                .body("content.idsOfUsersNamedIvo", contains(1))
+                .body("content.countOfPeopleStartingWithI", is(1))
+                .body("content.namesOfUsersWithBalanceGreaterThan150OnOwnedAccounts", contains("Marie"))
+                .body("content.idsOfTransactionsWhereIvoIsOwner", containsInAnyOrder("c4fd85db-55c5-4620-b7eb-73191a43520e", "736a5759-f681-40d7-92b5-0dff9327575e", "5fdba127-ab33-4881-bcf8-096e210fe7c9"))
+                .body("content.countOfTransactionsWithSameSourceAndTargetAccount", is(0))
+                .body("content.usersWithOneAccount", containsInAnyOrder(1, 2))
+                .body("content.averageNumberOfOutgoingTransactionsPerUser", is(1.5f));
     }
 
 }

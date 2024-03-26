@@ -7,12 +7,12 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface AccountRepository extends CrudRepository<Account, Long> {
 
-    int countByBalanceGreaterThan(double balance);
-
     @Override
-    @NonNull
     @EntityGraph(attributePaths = {"outgoingTransactions", "incomingTransactions"})
+    @NonNull
     Iterable<Account> findAll();
+
+    int countByBalanceGreaterThan(double balance);
 
     // return accounts where average amount of outgoing transaction is greater than the given number
     @Query("""

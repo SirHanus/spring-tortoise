@@ -9,17 +9,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-import org.hibernate.annotations.Subselect;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Data //přidává hashcode a equals
+@Data
 @NoArgsConstructor
 public class Account {
 
@@ -50,7 +45,8 @@ public class Account {
 
     @NotNull
     @ManyToMany(mappedBy = "accounts")
-    private List<User> users = new ArrayList<>();
+    @EqualsAndHashCode.Exclude
+    private Set<User> users = new HashSet<>();
 
     public Account(User owner, String name, double balance) {
         this.name = name;

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -56,7 +57,7 @@ public class UserIntegrationTest {
                 .statusCode(200)
                 .body("content.name", is("Ivo"))
                 .body("content.username", is("ivo"))
-                .body("content.accountIds", containsInAnyOrder(1,2))
+                .body("content.accountIds", containsInAnyOrder(1, 2))
                 .body("content.avgBalance", is(150.0f));
     }
 
