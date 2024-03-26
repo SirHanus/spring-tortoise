@@ -41,9 +41,9 @@ public class AccountIntegrationTest {
     @Test
     public void testGetAllAccounts() {
         given()
-        .when()
+                .when()
                 .get("/accounts")
-        .then()
+                .then()
                 .statusCode(200)
                 .body("items.size()", is(2))
                 .body("items.id", containsInAnyOrder(1, 2))
@@ -58,16 +58,16 @@ public class AccountIntegrationTest {
         int id = given()
                 .contentType(ContentType.JSON)
                 .body(newAccount)
-        .when()
+                .when()
                 .post("/accounts")
-        .then()
+                .then()
                 .statusCode(201)
-         .extract()
+                .extract()
                 .path("content.id");
 
         when()
                 .get("/accounts/" + id)
-        .then()
+                .then()
                 .statusCode(200)
                 .body("content.id", is(id))
                 .body("content.ownerId", is(1))
@@ -83,9 +83,9 @@ public class AccountIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(newStudent)
-        .when()
+                .when()
                 .post("/accounts")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
@@ -96,7 +96,7 @@ public class AccountIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(newStudent)
-        .when()
+                .when()
                 .post("/accounts")
                 .then()
                 .statusCode(404);
@@ -105,9 +105,9 @@ public class AccountIntegrationTest {
     @Test
     public void testGetAccountById() {
         given()
-        .when()
+                .when()
                 .get("/accounts/1")
-        .then()
+                .then()
                 .statusCode(200)
                 .body("content.id", is(1))
                 .body("content.ownerId", is(1))
@@ -130,18 +130,36 @@ public class AccountIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(updatedAccount)
-        .when()
+                .when()
                 .put("/accounts/1")
-        .then()
+                .then()
                 .statusCode(202);
 
         when()
                 .get("/accounts/1")
-        .then()
+                .then()
                 .body("content.id", is(1))
                 .body("content.ownerId", is(2))
                 .body("content.name", is("Updated account"))
                 .body("content.balance", is(100.0f));
+    }
+
+    @Test
+    public void testUpdateAccountSameOwner() {
+        var updatedAccount = new AccountRequest(1L, "Updated account");
+        given()
+                .contentType(ContentType.JSON)
+                .body(updatedAccount)
+                .when()
+                .put("/accounts/1")
+                .then()
+                .statusCode(202);
+
+        when()
+                .get("/accounts/1")
+                .then()
+                .body("content.ownerId", is(1));
+
     }
 
     @Test
@@ -150,9 +168,9 @@ public class AccountIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(updatedAccount)
-        .when()
+                .when()
                 .put("/accounts/999")
-        .then()
+                .then()
                 .statusCode(404);
     }
 
@@ -162,9 +180,9 @@ public class AccountIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(updatedAccount)
-        .when()
+                .when()
                 .put("/accounts/1")
-        .then()
+                .then()
                 .statusCode(400);
     }
 
@@ -174,7 +192,7 @@ public class AccountIntegrationTest {
         given()
                 .contentType(ContentType.JSON)
                 .body(updatedAccount)
-        .when()
+                .when()
                 .put("/accounts/1")
                 .then()
                 .statusCode(404);
@@ -183,9 +201,9 @@ public class AccountIntegrationTest {
     @Test
     public void testDeleteAccount() {
         given()
-        .when()
+                .when()
                 .delete("/accounts/1")
-        .then()
+                .then()
                 .statusCode(204);
 
         when().get("/accounts/1").then().statusCode(404);
