@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -33,10 +35,12 @@ public class User {
 
     @NotNull
     @ManyToMany
-    List<Account> accounts = new ArrayList<>();
+    @EqualsAndHashCode.Exclude
+    Set<Account> accounts = new HashSet<>();
 
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    List<Account> ownedAccounts = new ArrayList<>();
+    Set<Account> ownedAccounts = new HashSet<>();
 
     public User(String name, String username) {
         this.name = name;

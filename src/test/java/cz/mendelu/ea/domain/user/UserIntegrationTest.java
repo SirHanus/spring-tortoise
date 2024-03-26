@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -45,7 +44,8 @@ public class UserIntegrationTest {
                 .body("items.size()", is(2))
                 .body("items.name", containsInAnyOrder("Ivo", "Marie"))
                 .body("items.username", containsInAnyOrder("ivo", "mar777"))
-                .body("items.accountIds", containsInAnyOrder(List.of(1, 2), List.of(2)));
+                .body("items[0].accountIds", containsInAnyOrder(1, 2))
+                .body("items[1].accountIds", containsInAnyOrder(2));
     }
 
     @Test

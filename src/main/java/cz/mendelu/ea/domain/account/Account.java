@@ -8,12 +8,15 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Subselect;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
+@Data //přidává hashcode a equals
 @NoArgsConstructor
 public class Account {
 
@@ -33,10 +36,12 @@ public class Account {
     private double balance;
 
     @NotNull
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "sourceAccount")
     private List<Transaction> outgoingTransactions = new ArrayList<>();
 
     @NotNull
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "targetAccount")
     private List<Transaction> incomingTransactions = new ArrayList<>();
 
