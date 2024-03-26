@@ -2,15 +2,16 @@ package cz.mendelu.ea.domain.account;
 
 import cz.mendelu.ea.domain.transaction.Transaction;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AccountUnitTest {
 
     @Test
     public void testGetSumOfAllTransactions(){
-        // given
         Account account = new Account();
 
         Transaction transaction1 = new Transaction();
@@ -28,11 +29,20 @@ public class AccountUnitTest {
         double sum = account.getSumOfAllTransactions();
 
         assertThat(sum, is(-500.0));
+    }
 
-        //when
 
+    @Test
+    public void testGetSumOfAllTransactions_NegativeTransactionValue(){
+        Account account = new Account();
 
-        //then
+        Transaction transaction1 = new Transaction();
+        transaction1.setAmount(-1000); // invalid negative value
+
+        account.getOutgoingTransactions().add(transaction1);
+
+        //second parameter is simplified lambda
+        assertThrows(DataIntegrityViolationException.class, account::getSumOfAllTransactions);
     }
 
 }
