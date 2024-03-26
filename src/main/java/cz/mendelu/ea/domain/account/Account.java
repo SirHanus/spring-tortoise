@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -82,6 +83,26 @@ public class Account {
         for (Transaction transaction : outgoingTransactions) {
             transaction.setSourceAccount(null);
         }
+    }
+
+    public double getSumOfAllTransactions() {
+        double sum = 0;
+
+        for (Transaction transaction : incomingTransactions) {
+            if (transaction.getAmount() < 0) {
+                throw new DataIntegrityViolationException("Transaction amount must be positive.");
+            }
+            sum += transaction.getAmount();
+        }
+
+        for (Transaction transaction : outgoingTransactions) {
+            if (transaction.getAmount() < 0) {
+                throw new DataIntegrityViolationException("Transaction amount must be positive.");
+            }
+            sum -= transaction.getAmount();
+        }
+
+        return sum;
     }
 
 }
