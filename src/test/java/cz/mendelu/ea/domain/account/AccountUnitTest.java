@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AccountUnitTest {
 
     @Test
-    public void testGetSumOfAllTransactions(){
+    public void testGetSumOfAllTransactions() {
         Account account = new Account();
 
         Transaction transaction1 = new Transaction();
@@ -33,7 +33,7 @@ public class AccountUnitTest {
 
 
     @Test
-    public void testGetSumOfAllTransactions_NegativeTransactionValue(){
+    public void testGetSumOfAllTransactions_NegativeTransactionValue() {
         Account account = new Account();
 
         Transaction transaction1 = new Transaction();
