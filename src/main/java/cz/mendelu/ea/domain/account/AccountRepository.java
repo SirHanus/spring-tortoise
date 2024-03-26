@@ -9,6 +9,11 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
 
     int countByBalanceGreaterThan(double balance);
 
+    @Override
+    @NonNull
+    @EntityGraph(attributePaths = {"outgoingTransactions", "incomingTransactions"})
+    Iterable<Account> findAll();
+
     // return accounts where average amount of outgoing transaction is greater than the given number
     @Query("""
             SELECT COUNT(*) FROM (

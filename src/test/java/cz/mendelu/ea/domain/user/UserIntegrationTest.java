@@ -56,7 +56,7 @@ public class UserIntegrationTest {
                 .statusCode(200)
                 .body("content.name", is("Ivo"))
                 .body("content.username", is("ivo"))
-                .body("content.accountIds", is(List.of(1, 2)))
+                .body("content.accountIds", containsInAnyOrder(1,2))
                 .body("content.avgBalance", is(150.0f));
     }
 

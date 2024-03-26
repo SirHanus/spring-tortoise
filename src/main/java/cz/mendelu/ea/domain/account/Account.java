@@ -7,13 +7,16 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Subselect;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data //přidává hashcode a equals
@@ -36,14 +39,14 @@ public class Account {
     private double balance;
 
     @NotNull
-    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "sourceAccount")
-    private List<Transaction> outgoingTransactions = new ArrayList<>();
+    @EqualsAndHashCode.Exclude
+    private Set<Transaction> outgoingTransactions = new HashSet<>();
 
     @NotNull
-    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "targetAccount")
-    private List<Transaction> incomingTransactions = new ArrayList<>();
+    @EqualsAndHashCode.Exclude
+    private Set<Transaction> incomingTransactions = new HashSet<>();
 
     @NotNull
     @ManyToMany(mappedBy = "accounts")
