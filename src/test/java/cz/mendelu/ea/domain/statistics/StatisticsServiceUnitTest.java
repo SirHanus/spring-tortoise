@@ -1,18 +1,15 @@
 package cz.mendelu.ea.domain.statistics;
 
 import cz.mendelu.ea.domain.user.User;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class StatisticsServiceUnitTest {
 
@@ -36,8 +33,7 @@ public class StatisticsServiceUnitTest {
                                 new User("Petr", "Ivo"),
                                 new User("Honza", "Kuba")), List.of("Petr", "Honza")),
                 Arguments.of(
-                        List.of()
-                        , List.of())
+                        List.of(), List.of())
         );
     }
 }
