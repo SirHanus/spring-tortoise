@@ -1,5 +1,6 @@
 package cz.mendelu.ea.domain.account;
 
+import cz.mendelu.ea.domain.loan.Loan;
 import cz.mendelu.ea.domain.transaction.Transaction;
 import cz.mendelu.ea.domain.user.User;
 import jakarta.persistence.*;
@@ -45,6 +46,12 @@ public class Account {
     private Set<Transaction> incomingTransactions = new HashSet<>();
 
     @NotNull
+    @OneToMany(mappedBy = "attachedAccount")
+    @EqualsAndHashCode.Exclude
+    private Set<Loan> loans = new HashSet<>();
+
+
+    @NotNull
     @ManyToMany(mappedBy = "accounts")
     @EqualsAndHashCode.Exclude
     private Set<User> users = new HashSet<>();
@@ -76,7 +83,19 @@ public class Account {
     }
 
     @PreRemove
-    public void detachAccountFromTransactions() {
+    public void cleanUpLoansAndTransactions() {
+        detachAccountFromTransactions();
+        detachAccountFromLoans();
+
+    }
+
+    private void detachAccountFromLoans(){
+        for (Loan loan : loans){
+            loan.setAttachedAccount(null);
+        }
+    }
+
+    private void detachAccountFromTransactions(){
         for (Transaction transaction : incomingTransactions) {
             transaction.setTargetAccount(null);
         }
