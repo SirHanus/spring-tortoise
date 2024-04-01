@@ -1,0 +1,16 @@
+### Get all accounts
+GET http://localhost:8090/loans
+
+### Get account by id
+GET http://localhost:8090/loans/2d3cc9f0-cc40-43fe-8b17-b159a354bd53
+
+### Send POST request with json body
+POST http://localhost:8090/loans
+Content-Type: application/json
+
+{
+  "amount": 5.5,
+  "interestRate": 2.0,
+  "period" : 5,
+  "accountId": 1
+}

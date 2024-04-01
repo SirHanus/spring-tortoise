@@ -10,23 +10,30 @@
         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
     <changeSet id="1" author="Kubko">
         <createTable tableName="loan">
-            <column name="id" type="bigint" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
+            <column name="id" type="uuid" valueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="amount" type="decimal(10,2)"/>
-            <column name="source_account_id" type="bigint"/>
-            <column name="target_account_id" type="bigint"/>
+            <column name="amount" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interest_rate" type="decimal(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attached_account_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period" type="int">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
     <changeSet id="2" author="Ivo">
-        <addForeignKeyConstraint baseTableName="transaction"
-                                 baseColumnNames="source_account_id"
-                                 constraintName="fk_transaction_source_account"
-                                 referencedTableName="account"
-                                 referencedColumnNames="id"/>
-        <addForeignKeyConstraint baseTableName="transaction"
-                                 baseColumnNames="target_account_id"
-                                 constraintName="fk_transaction_target_account"
+        <addForeignKeyConstraint baseTableName="loan"
+                                 baseColumnNames="attached_account_id"
+                                 constraintName="fk_loan_account"
                                  referencedTableName="account"
                                  referencedColumnNames="id"/>
     </changeSet>
