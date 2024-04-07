@@ -1,5 +1,6 @@
 package cz.mendelu.ea.domain.user;
 
+import cz.mendelu.ea.domain.account.Account;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +36,15 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
+        User user = new User();
+        if (repository.findById(id).isPresent()) {
+            user = repository.findById(id).get();
+            for (Account account : user.getAccounts()) {
+                account.getUsers().remove(user);
+            }
+        }
+
+
         repository.deleteById(id);
     }
 

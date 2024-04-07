@@ -54,11 +54,4 @@ public class User {
         account.getUsers().add(this);
     }
 
-    @PreRemove
-    public void detachAccountFromTransactions() {
-        for (Account account : ownedAccounts){
-            account.getLoans().clear();
-        }
-    }
-
 }

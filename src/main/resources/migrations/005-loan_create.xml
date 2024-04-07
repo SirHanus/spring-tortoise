@@ -20,7 +20,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="attached_account_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="start_date" type="date">
                 <constraints nullable="false"/>

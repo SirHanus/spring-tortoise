@@ -28,7 +28,7 @@ public class Seeder {
     }
 
     private boolean shouldSeedData() {
-        return accountService.getAllAccounts().isEmpty();
+        return accountService.getAllAccounts().isEmpty() || userService.getAllUsers().isEmpty();
     }
 
     @PostConstruct
@@ -46,6 +46,9 @@ public class Seeder {
         Account account1 = new Account(user1, "My account", 100.0);
         Account account2 = new Account(user2, "Savings for a car", 200.0);
         user1.attachAccount(account2);
+        accountService.createAccount(account1);
+        accountService.createAccount(account2);
+//
 
         Loan loan1 = new Loan();
         loan1.setAmount(500.0);
@@ -68,9 +71,6 @@ public class Seeder {
         loan3.setStartDate(LocalDate.now());
         loan3.setPeriod(36);
 
-
-        accountService.createAccount(account1);
-        accountService.createAccount(account2);
 
         loanService.createLoan(loan1);
         loanService.createLoan(loan2);

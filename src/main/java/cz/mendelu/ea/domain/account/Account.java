@@ -84,8 +84,8 @@ public class Account {
 
     @PreRemove
     public void cleanUpLoansAndTransactions() {
-        detachAccountFromTransactions();
         detachAccountFromLoans();
+        detachAccountFromTransactions();
 
     }
 
