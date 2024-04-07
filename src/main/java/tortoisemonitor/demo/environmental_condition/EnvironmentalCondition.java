@@ -1,10 +1,8 @@
 package tortoisemonitor.demo.environmental_condition;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+
+import jakarta.persistence.*;
 import lombok.Data;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -15,7 +13,7 @@ public class EnvironmentalCondition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID uuid;
 
     @NotNull(message = "Temperature is required")
     private Double temperature;
@@ -28,7 +26,4 @@ public class EnvironmentalCondition {
 
     @NotNull(message = "Timestamp is required")
     private LocalDateTime timestamp;
-
-    // Lombok will generate constructors, getters, and setters
 }
-

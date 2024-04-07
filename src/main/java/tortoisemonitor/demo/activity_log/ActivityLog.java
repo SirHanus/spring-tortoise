@@ -1,11 +1,10 @@
 package tortoisemonitor.demo.activity_log;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+import tortoisemonitor.demo.tortoise.Tortoise;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -17,8 +16,8 @@ public class ActivityLog {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID uuid;
 
-    @NotNull(message = "Tortoise ID is required")
-    private Long tortoiseId; // This should ideally be a mapped foreign key to the Tortoise entity
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Tortoise tortoise;
 
     @NotBlank(message = "Activity type is required")
     private String activityType;
@@ -26,10 +25,8 @@ public class ActivityLog {
     @NotNull(message = "Start time is required")
     private LocalDateTime startTime;
 
-    private LocalDateTime endTime; // Nullable, no constraints needed
+    private LocalDateTime endTime;
 
     @Size(max = 500, message = "Notes must be less than 500 characters")
-    private String notes; // Nullable, no constraints needed
-
-    // Lombok will generate constructors, getters, and setters
+    private String notes;
 }

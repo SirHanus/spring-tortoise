@@ -1,11 +1,11 @@
 package tortoisemonitor.demo.tortoise;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+import tortoisemonitor.demo.activity_log.ActivityLog;
+
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +14,7 @@ public class Tortoise {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID uuid;
 
     @NotBlank(message = "Name is required")
     private String name;
@@ -26,8 +26,8 @@ public class Tortoise {
     @PositiveOrZero(message = "Age cannot be negative")
     private Integer age;
 
-    private String healthStatus; // No constraints as it may be null
+    private String healthStatus;
 
-    // Lombok will generate constructors, getters, and setters
+    @OneToMany(mappedBy = "tortoise", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActivityLog> activityLogs;
 }
-
