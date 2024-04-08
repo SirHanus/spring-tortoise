@@ -3,6 +3,7 @@ package tortoisemonitor.demo.tortoise;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+import tortoisemonitor.demo.TortoiseHabitat.TortoiseHabitat;
 import tortoisemonitor.demo.activity_log.ActivityLog;
 
 import java.util.List;
@@ -19,8 +20,9 @@ public class Tortoise {
     @NotBlank(message = "Name is required")
     private String name;
 
-    @NotBlank(message = "Species is required")
-    private String species;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Species is required")
+    private TortoiseSpecies species;
 
     @NotNull(message = "Age is required")
     @PositiveOrZero(message = "Age cannot be negative")
@@ -30,4 +32,8 @@ public class Tortoise {
 
     @OneToMany(mappedBy = "tortoise", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActivityLog> activityLogs;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "habitat_uuid")
+    private TortoiseHabitat habitat;
 }

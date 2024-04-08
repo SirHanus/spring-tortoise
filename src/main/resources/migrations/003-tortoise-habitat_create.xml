@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.10.xsd">
+
+    <changeSet id="4" author="KubkoZelva">
+        <createTable tableName="tortoise_habitat">
+            <column name="uuid" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="5" author="KubkoZelva">
+        <addColumn tableName="tortoise">
+            <column name="habitat_uuid" type="UUID">
+                <constraints nullable="true" referencedTableName="tortoise_habitat"
+                             referencedColumnNames="uuid" foreignKeyName="fk_tortoises_habitat"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Adding habitat_uuid foreign key column to environmental_conditions table -->
+    <changeSet id="6" author="KubkoZelva">
+        <addColumn tableName="environmental_condition">
+            <column name="habitat_uuid" type="UUID">
+                <constraints nullable="true" referencedTableName="tortoise_habitat"
+                             referencedColumnNames="uuid" foreignKeyName="fk_environmental_conditions_habitat"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="7" author="KubkoZelva">
+        <addForeignKeyConstraint baseTableName="tortoise"
+                                 baseColumnNames="habitat_uuid"
+                                 constraintName="fk_tortoise_tortoise_habitat"
+                                 referencedTableName="tortoise_habitat"
+                                 referencedColumnNames="uuid"/>
+    </changeSet>
+    <changeSet id="8" author="KubkoZelva">
+        <addForeignKeyConstraint baseTableName="environmental_condition"
+                                 baseColumnNames="habitat_uuid"
+                                 constraintName="fk_environmental_condition_tortoise_habitat"
+                                 referencedTableName="tortoise_habitat"
+                                 referencedColumnNames="uuid"/>
+    </changeSet>
+</databaseChangeLog>

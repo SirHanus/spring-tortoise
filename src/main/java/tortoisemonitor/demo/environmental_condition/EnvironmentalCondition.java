@@ -3,6 +3,7 @@ package tortoisemonitor.demo.environmental_condition;
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
+import tortoisemonitor.demo.TortoiseHabitat.TortoiseHabitat;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -26,4 +27,8 @@ public class EnvironmentalCondition {
 
     @NotNull(message = "Timestamp is required")
     private LocalDateTime timestamp;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "habitat_uuid")
+    private TortoiseHabitat habitat;
 }

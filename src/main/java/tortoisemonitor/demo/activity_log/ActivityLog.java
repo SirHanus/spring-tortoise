@@ -19,8 +19,9 @@ public class ActivityLog {
     @ManyToOne(fetch = FetchType.LAZY)
     private Tortoise tortoise;
 
-    @NotBlank(message = "Activity type is required")
-    private String activityType;
+    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Activity type is required")
+    private ActivityType activityType;
 
     @NotNull(message = "Start time is required")
     private LocalDateTime startTime;
