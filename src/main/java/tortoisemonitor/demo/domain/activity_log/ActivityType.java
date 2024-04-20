@@ -1,4 +1,4 @@
-package tortoisemonitor.demo.activity_log;
+package tortoisemonitor.demo.domain.activity_log;
 
 public enum ActivityType {
     FEEDING,

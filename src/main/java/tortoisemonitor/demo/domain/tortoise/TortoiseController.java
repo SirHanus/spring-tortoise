@@ -1,20 +1,29 @@
-package tortoisemonitor.demo.tortoise;
+package tortoisemonitor.demo.domain.tortoise;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/tortoises")
 @Tag(name = "Tortoise Management", description = "Operations related to Tortoise Management")
 public class TortoiseController {
+
+    TortoiseService tortoiseService;
+
+    @Autowired
+    public TortoiseController(TortoiseService tortoiseService) {
+        this.tortoiseService = tortoiseService;
+    }
 
     @PostMapping(value = "", produces = "application/json")
     @Operation(summary = "Create a new tortoise profile",
@@ -28,7 +37,7 @@ public class TortoiseController {
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED) // 201
     public Tortoise createTortoise(@RequestBody Tortoise tortoise) {
-        return new Tortoise(); // Placeholder return
+         return tortoiseService.createTortoise(tortoise);
     }
 
     @GetMapping(value = "", produces = "application/json")
@@ -39,7 +48,7 @@ public class TortoiseController {
                             schema = @Schema(implementation = List.class)))})
     @ResponseStatus(HttpStatus.OK) // 200
     public List<Tortoise> getAllTortoises() {
-        return new ArrayList<>(); // Placeholder return
+        return tortoiseService.getAllTortoises();
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -51,8 +60,8 @@ public class TortoiseController {
                     @ApiResponse(responseCode = "404", description = "Tortoise not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK) // 200
-    public Tortoise getTortoiseById(@PathVariable Long id) {
-        return new Tortoise(); // Placeholder return
+    public Tortoise getTortoiseById(@PathVariable UUID id) {
+        return tortoiseService.getTortoiseById(id);
     }
 
     @PutMapping(value = "/{id}", produces = "application/json")
@@ -66,8 +75,8 @@ public class TortoiseController {
                     @ApiResponse(responseCode = "404", description = "Tortoise not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK) // 200
-    public Tortoise updateTortoise(@PathVariable Long id, @RequestBody Tortoise tortoise) {
-        return new Tortoise(); // Placeholder return
+    public Tortoise updateTortoise(@PathVariable UUID id, @RequestBody Tortoise tortoise) {
+        return tortoiseService.updateTortoise(id, tortoise);
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
@@ -78,7 +87,7 @@ public class TortoiseController {
                     @ApiResponse(responseCode = "404", description = "Tortoise not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK) // 200
-    public void deleteTortoise(@PathVariable Long id) {
-        // TBD: Implementation goes here
+    public void deleteTortoise(@PathVariable UUID id) {
+        tortoiseService.deleteTortoise(id);
     }
 }

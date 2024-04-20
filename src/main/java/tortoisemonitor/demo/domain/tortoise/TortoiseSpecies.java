@@ -1,4 +1,4 @@
-package tortoisemonitor.demo.tortoise;
+package tortoisemonitor.demo.domain.tortoise;
 
 public enum TortoiseSpecies {
     SULCATA,

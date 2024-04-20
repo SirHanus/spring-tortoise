@@ -1,11 +1,12 @@
-package tortoisemonitor.demo.tortoise;
+package tortoisemonitor.demo.domain.tortoise;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
-import tortoisemonitor.demo.TortoiseHabitat.TortoiseHabitat;
-import tortoisemonitor.demo.activity_log.ActivityLog;
+import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitat;
+import tortoisemonitor.demo.domain.activity_log.ActivityLog;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,9 +32,14 @@ public class Tortoise {
     private String healthStatus;
 
     @OneToMany(mappedBy = "tortoise", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ActivityLog> activityLogs;
+    private List<ActivityLog> activityLogs = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "habitat_uuid")
     private TortoiseHabitat habitat;
+
+
+    public void addActivityLog(ActivityLog activityLog) {
+        activityLogs.add(activityLog);
+    }
 }

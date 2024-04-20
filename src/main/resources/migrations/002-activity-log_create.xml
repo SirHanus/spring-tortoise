@@ -14,7 +14,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="tortoise_uuid" type="uuid">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
             <column name="start_time" type="timestamp">
                 <constraints nullable="false"/>

@@ -1,20 +1,30 @@
-package tortoisemonitor.demo.environmental_condition;
+package tortoisemonitor.demo.domain.environmental_condition;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/environment")
 @Tag(name = "Environmental Conditions", description = "Operations related to Environmental Conditions")
 public class EnvironmentalConditionController {
+
+    private final EnvironmentalConditionService environmentalConditionService;
+
+    @Autowired
+    public EnvironmentalConditionController(EnvironmentalConditionService environmentalConditionService) {
+        this.environmentalConditionService = environmentalConditionService;
+    }
+
 
     @PostMapping(value = "", produces = "application/json")
     @Operation(summary = "Log new environmental conditions",
@@ -27,7 +37,7 @@ public class EnvironmentalConditionController {
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     public EnvironmentalCondition logEnvironmentalCondition(@RequestBody EnvironmentalCondition environmentalCondition) {
-        return new EnvironmentalCondition(); // Placeholder return
+        return environmentalConditionService.createEnvironmentalCondition(environmentalCondition);
     }
 
     @GetMapping(value = "", produces = "application/json")
@@ -39,7 +49,9 @@ public class EnvironmentalConditionController {
                                     schema = @Schema(implementation = List.class)))})
     @ResponseStatus(HttpStatus.OK)
     public List<EnvironmentalCondition> getAllEnvironmentalConditions() {
-        return new ArrayList<>(); // Placeholder return
+        List<EnvironmentalCondition> environmentalConditions = new ArrayList<>();
+        environmentalConditionService.getAllEnvironmentalConditions().forEach(environmentalConditions::add);
+        return environmentalConditions;
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -52,8 +64,8 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public EnvironmentalCondition getEnvironmentalConditionById(@PathVariable Long id) {
-        return new EnvironmentalCondition(); // Placeholder return
+    public EnvironmentalCondition getEnvironmentalConditionById(@PathVariable UUID id) {
+        return environmentalConditionService.getEnvironmentalConditionById(id);
     }
 
     @PutMapping(value = "/{id}", produces = "application/json")
@@ -68,8 +80,8 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public EnvironmentalCondition updateEnvironmentalCondition(@PathVariable Long id, @RequestBody EnvironmentalCondition environmentalCondition) {
-        return new EnvironmentalCondition(); // Placeholder return
+    public EnvironmentalCondition updateEnvironmentalCondition(@PathVariable UUID id, @RequestBody EnvironmentalCondition environmentalCondition) {
+        return environmentalConditionService.updateEnvironmentalCondition(id, environmentalCondition);
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
@@ -81,7 +93,7 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteEnvironmentalCondition(@PathVariable Long id) {
-        // TBD: Implementation goes here
+    public void deleteEnvironmentalCondition(@PathVariable UUID id) {
+        environmentalConditionService.deleteEnvironmentalCondition(id);
     }
 }

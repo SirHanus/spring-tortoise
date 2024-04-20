@@ -1,20 +1,30 @@
-package tortoisemonitor.demo.activity_log;
+package tortoisemonitor.demo.domain.activity_log;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/activityLogs")
 @Tag(name = "Activity Logs", description = "Operations related to Activity Logs")
+@Validated
 public class ActivityLogController {
+
+    private final ActivityLogService activityLogService;
+
+    @Autowired
+    public ActivityLogController(ActivityLogService activityLogService) {
+        this.activityLogService = activityLogService;
+    }
 
     @PostMapping(value = "", produces = "application/json")
     @Operation(summary = "Log a new activity for a tortoise",
@@ -27,7 +37,7 @@ public class ActivityLogController {
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     public ActivityLog logActivity(@RequestBody ActivityLog activityLog) {
-        return new ActivityLog(); // Placeholder return
+        return activityLogService.createActivityLog(activityLog);
     }
 
     @GetMapping(value = "", produces = "application/json")
@@ -39,7 +49,7 @@ public class ActivityLogController {
                                     schema = @Schema(implementation = List.class)))})
     @ResponseStatus(HttpStatus.OK)
     public List<ActivityLog> getAllActivities() {
-        return new ArrayList<>(); // Placeholder return
+        return activityLogService.getAllActivityLogs(); // Placeholder return
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -52,8 +62,8 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public ActivityLog getActivityById(@PathVariable Long id) {
-        return new ActivityLog(); // Placeholder return
+    public ActivityLog getActivityById(@PathVariable UUID id) {
+        return activityLogService.getActivityLogById(id); // Placeholder return
     }
 
     @PutMapping(value = "/{id}", produces = "application/json")
@@ -68,8 +78,8 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public ActivityLog updateActivity(@PathVariable Long id, @RequestBody ActivityLog activityLog) {
-        return new ActivityLog(); // Placeholder return
+    public ActivityLog updateActivity(@PathVariable UUID id, @RequestBody ActivityLog activityLog) {
+        return activityLogService.updateActivityLog(id,activityLog);
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")
@@ -81,7 +91,7 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteActivity(@PathVariable Long id) {
-        // TBD: Implementation goes here
+    public void deleteActivity(@PathVariable UUID id) {
+        activityLogService.deleteActivityLog(id);
     }
 }

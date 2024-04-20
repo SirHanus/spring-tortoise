@@ -1,9 +1,9 @@
-package tortoisemonitor.demo.activity_log;
+package tortoisemonitor.demo.domain.activity_log;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
-import tortoisemonitor.demo.tortoise.Tortoise;
+import tortoisemonitor.demo.domain.tortoise.Tortoise;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

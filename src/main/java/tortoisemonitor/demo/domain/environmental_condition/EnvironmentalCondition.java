@@ -1,9 +1,9 @@
-package tortoisemonitor.demo.environmental_condition;
+package tortoisemonitor.demo.domain.environmental_condition;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.*;
-import tortoisemonitor.demo.TortoiseHabitat.TortoiseHabitat;
+import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitat;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
