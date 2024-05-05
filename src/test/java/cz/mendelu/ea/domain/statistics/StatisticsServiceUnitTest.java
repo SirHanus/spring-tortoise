@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -15,25 +16,34 @@ public class StatisticsServiceUnitTest {
 
     @ParameterizedTest
     @MethodSource("testGetNamesOfUsersParameters")
-    public void testGetNamesOfUsers(List<User> users, List<String> expectedNames) {
-        StatisticsService service = new StatisticsService(null, null, null);
+    public void testGetNamesOfUsers(List<User> users, List<String> expected) {
+        // given
+        StatisticsService statisticsService = new StatisticsService(null, null, null);
 
+        // when
+        List<String> result = statisticsService.getNamesOfUsers(users);
 
-        List<String> results = service.getNamesOfUsers(users);
-        assertThat(results, containsInAnyOrder(expectedNames.toArray()));
+        // then results equals to expeected in ayn order
+        assertThat(result, containsInAnyOrder(expected.toArray()));
     }
 
     private static Stream<Arguments> testGetNamesOfUsersParameters() {
         return Stream.of(
-                Arguments.of(List.of(
-                        new User("Ivo", "Ivo"),
-                        new User("Kuba", "Kuba")), List.of("Ivo", "Kuba")),
+                // two users
                 Arguments.of(
-                        List.of(
-                                new User("Petr", "Ivo"),
-                                new User("Honza", "Kuba")), List.of("Petr", "Honza")),
+                        Arrays.asList(new User("Ivo", "ivo"), new User("Pepa", "pepa")),
+                        Arrays.asList("Ivo", "Pepa")
+                ),
+                // one user
                 Arguments.of(
-                        List.of(), List.of())
+                        Arrays.asList(new User("Ivo", "ivo")),
+                        Arrays.asList("Ivo")
+                ),
+                // no users
+                Arguments.of(
+                        Arrays.asList(),
+                        Arrays.asList()
+                )
         );
     }
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
-    private final AccountRepository repository;
+    private AccountRepository repository;
 
     public AccountService(AccountRepository repository) {
         this.repository = repository;

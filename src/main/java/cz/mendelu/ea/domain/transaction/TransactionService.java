@@ -2,8 +2,6 @@ package cz.mendelu.ea.domain.transaction;
 
 import cz.mendelu.ea.domain.account.Account;
 import cz.mendelu.ea.utils.exceptions.InsufficientBalanceException;
-import cz.mendelu.ea.utils.exceptions.NotFoundException;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

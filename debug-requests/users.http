@@ -15,4 +15,4 @@ Content-Type: application/json
 }
 
 ### Delete a user by id
-DELETE http://localhost:8090/users/2
+DELETE http://localhost:8090/users/1

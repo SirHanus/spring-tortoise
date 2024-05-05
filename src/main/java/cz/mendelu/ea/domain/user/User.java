@@ -1,8 +1,6 @@
 package cz.mendelu.ea.domain.user;
 
 import cz.mendelu.ea.domain.account.Account;
-import cz.mendelu.ea.domain.loan.Loan;
-import cz.mendelu.ea.domain.transaction.Transaction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
