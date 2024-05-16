@@ -36,7 +36,10 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
-    public ActivityLog logActivity(@RequestBody ActivityLog activityLog) {
+    public ActivityLogResponse logActivity(@RequestBody ActivityLogRequest activityLogRequest) {
+        ActivityLogResponse activityLogResponse = new ActivityLogResponse();
+        activityLogResponse.fromActivityLog(activityLogService.createActivityLog(activityLogRequest));
+
         return activityLogService.createActivityLog(activityLog);
     }
 
