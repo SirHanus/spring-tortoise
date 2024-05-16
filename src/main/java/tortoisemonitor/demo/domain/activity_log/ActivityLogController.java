@@ -9,9 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import tortoisemonitor.demo.domain.tortoise.TortoiseService;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/activityLogs")
@@ -20,10 +22,12 @@ import java.util.UUID;
 public class ActivityLogController {
 
     private final ActivityLogService activityLogService;
+    private final TortoiseService tortoiseService;
 
     @Autowired
-    public ActivityLogController(ActivityLogService activityLogService) {
+    public ActivityLogController(ActivityLogService activityLogService, TortoiseService tortoiseService) {
         this.activityLogService = activityLogService;
+        this.tortoiseService = tortoiseService;
     }
 
     @PostMapping(value = "", produces = "application/json")
@@ -32,15 +36,17 @@ public class ActivityLogController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Activity logged successfully",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ActivityLog.class))),
+                                    schema = @Schema(implementation = ActivityLogResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     public ActivityLogResponse logActivity(@RequestBody ActivityLogRequest activityLogRequest) {
+        ActivityLog activityLog = new ActivityLog();
+        activityLogRequest.toActivityLog(activityLog, tortoiseService);
+        ActivityLog createdActivityLog = activityLogService.createActivityLog(activityLog);
         ActivityLogResponse activityLogResponse = new ActivityLogResponse();
-        activityLogResponse.fromActivityLog(activityLogService.createActivityLog(activityLogRequest));
-
-        return activityLogService.createActivityLog(activityLog);
+        activityLogResponse.fromActivityLog(createdActivityLog);
+        return activityLogResponse;
     }
 
     @GetMapping(value = "", produces = "application/json")
@@ -49,10 +55,14 @@ public class ActivityLogController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved list",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = List.class)))})
+                                    schema = @Schema(implementation = ActivityLogResponse.class)))})
     @ResponseStatus(HttpStatus.OK)
-    public List<ActivityLog> getAllActivities() {
-        return activityLogService.getAllActivityLogs(); // Placeholder return
+    public List<ActivityLogResponse> getAllActivities() {
+        return activityLogService.getAllActivityLogs().stream().map(activityLog -> {
+            ActivityLogResponse activityLogResponse = new ActivityLogResponse();
+            activityLogResponse.fromActivityLog(activityLog);
+            return activityLogResponse;
+        }).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -61,12 +71,15 @@ public class ActivityLogController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved activity log details",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ActivityLog.class))),
+                                    schema = @Schema(implementation = ActivityLogResponse.class))),
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public ActivityLog getActivityById(@PathVariable UUID id) {
-        return activityLogService.getActivityLogById(id); // Placeholder return
+    public ActivityLogResponse getActivityById(@PathVariable UUID id) {
+        ActivityLog activityLog = activityLogService.getActivityLogById(id);
+        ActivityLogResponse activityLogResponse = new ActivityLogResponse();
+        activityLogResponse.fromActivityLog(activityLog);
+        return activityLogResponse;
     }
 
     @PutMapping(value = "/{id}", produces = "application/json")
@@ -75,14 +88,20 @@ public class ActivityLogController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Activity log updated successfully",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ActivityLog.class))),
+                                    schema = @Schema(implementation = ActivityLogResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public ActivityLog updateActivity(@PathVariable UUID id, @RequestBody ActivityLog activityLog) {
-        return activityLogService.updateActivityLog(id,activityLog);
+    public ActivityLogResponse updateActivity(@PathVariable UUID id, @RequestBody ActivityLogRequest activityLogRequest) {
+        ActivityLog activityLog = new ActivityLog();
+        activityLogRequest.toActivityLog(activityLog, tortoiseService);
+        ActivityLog updatedActivityLog = activityLogService.updateActivityLog(id, activityLog);
+
+        ActivityLogResponse activityLogResponse = new ActivityLogResponse();
+        activityLogResponse.fromActivityLog(updatedActivityLog);
+        return activityLogResponse;
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")

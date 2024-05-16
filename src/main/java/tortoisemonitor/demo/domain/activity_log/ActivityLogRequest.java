@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import tortoisemonitor.demo.domain.tortoise.Tortoise;
+import tortoisemonitor.demo.domain.tortoise.TortoiseService;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -27,5 +28,12 @@ public class ActivityLogRequest {
     @Size(max = 500, message = "Notes must be less than 500 characters")
     private String notes;
 
-
+    public void toActivityLog(ActivityLog activityLog, TortoiseService tortoiseService) {
+        activityLog.setUuid(uuid);
+        activityLog.setActivityType(activityType);
+        activityLog.setStartTime(startTime);
+        activityLog.setEndTime(endTime);
+        activityLog.setNotes(notes);
+        activityLog.setTortoise(tortoiseService.getTortoiseById(this.tortoiseId));
+    }
 }

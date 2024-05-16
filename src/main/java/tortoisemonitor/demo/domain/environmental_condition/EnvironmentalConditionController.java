@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitatService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +20,13 @@ import java.util.UUID;
 public class EnvironmentalConditionController {
 
     private final EnvironmentalConditionService environmentalConditionService;
+    private final TortoiseHabitatService tortoiseHabitatService;
 
     @Autowired
-    public EnvironmentalConditionController(EnvironmentalConditionService environmentalConditionService) {
+    public EnvironmentalConditionController(EnvironmentalConditionService environmentalConditionService, TortoiseHabitatService tortoiseHabitatService) {
         this.environmentalConditionService = environmentalConditionService;
+        this.tortoiseHabitatService = tortoiseHabitatService;
     }
-
 
     @PostMapping(value = "", produces = "application/json")
     @Operation(summary = "Log new environmental conditions",
@@ -32,12 +34,18 @@ public class EnvironmentalConditionController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Environmental condition logged successfully",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = EnvironmentalCondition.class))),
+                                    schema = @Schema(implementation = EnvironmentalConditionResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
-    public EnvironmentalCondition logEnvironmentalCondition(@RequestBody EnvironmentalCondition environmentalCondition) {
-        return environmentalConditionService.createEnvironmentalCondition(environmentalCondition);
+    public EnvironmentalConditionResponse logEnvironmentalCondition(@RequestBody EnvironmentalConditionRequest environmentalConditionRequest) {
+        EnvironmentalCondition environmentalCondition = new EnvironmentalCondition();
+        environmentalConditionRequest.toEnvironmentalCondition(environmentalCondition, tortoiseHabitatService);
+        EnvironmentalCondition createdEnvironmentalCondition = environmentalConditionService.createEnvironmentalCondition(environmentalCondition);
+
+        EnvironmentalConditionResponse environmentalConditionResponse = new EnvironmentalConditionResponse();
+        environmentalConditionResponse.fromEnvironmentalConditionResponse(createdEnvironmentalCondition);
+        return environmentalConditionResponse;
     }
 
     @GetMapping(value = "", produces = "application/json")
@@ -46,12 +54,16 @@ public class EnvironmentalConditionController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved list",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = List.class)))})
+                                    schema = @Schema(implementation = EnvironmentalConditionResponse.class)))})
     @ResponseStatus(HttpStatus.OK)
-    public List<EnvironmentalCondition> getAllEnvironmentalConditions() {
-        List<EnvironmentalCondition> environmentalConditions = new ArrayList<>();
-        environmentalConditionService.getAllEnvironmentalConditions().forEach(environmentalConditions::add);
-        return environmentalConditions;
+    public List<EnvironmentalConditionResponse> getAllEnvironmentalConditions() {
+        List<EnvironmentalConditionResponse> environmentalConditionResponses = new ArrayList<>();
+        environmentalConditionService.getAllEnvironmentalConditions().forEach(x -> {
+            EnvironmentalConditionResponse environmentalConditionResponse = new EnvironmentalConditionResponse();
+            environmentalConditionResponse.fromEnvironmentalConditionResponse(x);
+            environmentalConditionResponses.add(environmentalConditionResponse);
+        });
+        return environmentalConditionResponses;
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
@@ -60,12 +72,15 @@ public class EnvironmentalConditionController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved environmental condition details",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = EnvironmentalCondition.class))),
+                                    schema = @Schema(implementation = EnvironmentalConditionResponse.class))),
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public EnvironmentalCondition getEnvironmentalConditionById(@PathVariable UUID id) {
-        return environmentalConditionService.getEnvironmentalConditionById(id);
+    public EnvironmentalConditionResponse getEnvironmentalConditionById(@PathVariable UUID id) {
+        EnvironmentalCondition environmentalCondition = environmentalConditionService.getEnvironmentalConditionById(id);
+        EnvironmentalConditionResponse environmentalConditionResponse = new EnvironmentalConditionResponse();
+        environmentalConditionResponse.fromEnvironmentalConditionResponse(environmentalCondition);
+        return environmentalConditionResponse;
     }
 
     @PutMapping(value = "/{id}", produces = "application/json")
@@ -74,14 +89,20 @@ public class EnvironmentalConditionController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Environmental condition updated successfully",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = EnvironmentalCondition.class))),
+                                    schema = @Schema(implementation = EnvironmentalConditionResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public EnvironmentalCondition updateEnvironmentalCondition(@PathVariable UUID id, @RequestBody EnvironmentalCondition environmentalCondition) {
-        return environmentalConditionService.updateEnvironmentalCondition(id, environmentalCondition);
+    public EnvironmentalConditionResponse updateEnvironmentalCondition(@PathVariable UUID id, @RequestBody EnvironmentalConditionRequest environmentalConditionRequest) {
+        EnvironmentalCondition environmentalCondition = new EnvironmentalCondition();
+        environmentalConditionRequest.toEnvironmentalCondition(environmentalCondition, tortoiseHabitatService);
+        environmentalConditionService.updateEnvironmentalCondition(id, environmentalCondition);
+
+        EnvironmentalConditionResponse environmentalConditionResponse = new EnvironmentalConditionResponse();
+        environmentalConditionResponse.fromEnvironmentalConditionResponse(environmentalCondition);
+        return environmentalConditionResponse;
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/json")

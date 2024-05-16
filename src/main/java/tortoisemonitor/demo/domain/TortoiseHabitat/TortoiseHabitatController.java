@@ -1,4 +1,5 @@
 package tortoisemonitor.demo.domain.TortoiseHabitat;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -7,10 +8,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalConditionService;
+import tortoisemonitor.demo.domain.tortoise.TortoiseService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/tortoiseHabitats")
@@ -18,10 +21,14 @@ import java.util.UUID;
 public class TortoiseHabitatController {
 
     public final TortoiseHabitatService tortoiseHabitatService;
+    private final TortoiseService tortoiseService;
+    private final EnvironmentalConditionService environmentalConditionService;
 
     @Autowired
-    public TortoiseHabitatController(TortoiseHabitatService tortoiseHabitatService) {
+    public TortoiseHabitatController(TortoiseHabitatService tortoiseHabitatService, TortoiseService tortoiseService, EnvironmentalConditionService environmentalConditionService) {
         this.tortoiseHabitatService = tortoiseHabitatService;
+        this.tortoiseService = tortoiseService;
+        this.environmentalConditionService = environmentalConditionService;
     }
 
     @PostMapping(value = "", produces = "application/json")
@@ -30,12 +37,17 @@ public class TortoiseHabitatController {
             responses = {
                     @ApiResponse(responseCode = "201", description = "Tortoise habitat created successfully",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = TortoiseHabitat.class))),
+                                    schema = @Schema(implementation = TortoiseHabitatResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
-    public TortoiseHabitat createTortoiseHabitat(@RequestBody TortoiseHabitat tortoiseHabitat) {
-        return tortoiseHabitatService.createTortoiseHabitat(tortoiseHabitat);
+    public TortoiseHabitatResponse createTortoiseHabitat(@RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
+        TortoiseHabitat tortoiseHabitat = new TortoiseHabitat();
+        tortoiseHabitatRequest.toTortoiseHabitat(tortoiseHabitat, tortoiseService, environmentalConditionService);
+        tortoiseHabitatService.createTortoiseHabitat(tortoiseHabitat);
+        TortoiseHabitatResponse tortoiseHabitatResponse = new TortoiseHabitatResponse();
+        tortoiseHabitatResponse.fromTortoiseHabitat(tortoiseHabitat);
+        return tortoiseHabitatResponse;
     }
 
     @GetMapping(value = "", produces = "application/json")
@@ -44,10 +56,14 @@ public class TortoiseHabitatController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved list",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = List.class)))})
+                                    schema = @Schema(implementation = TortoiseHabitatResponse.class)))})
     @ResponseStatus(HttpStatus.OK)
-    public List<TortoiseHabitat> getAllTortoiseHabitats() {
-        return tortoiseHabitatService.getAllTortoiseHabitats();
+    public List<TortoiseHabitatResponse> getAllTortoiseHabitats() {
+        return tortoiseHabitatService.getAllTortoiseHabitats().stream().map(tortoiseHabitat -> {
+            TortoiseHabitatResponse tortoiseHabitatResponse = new TortoiseHabitatResponse();
+            tortoiseHabitatResponse.fromTortoiseHabitat(tortoiseHabitat);
+            return tortoiseHabitatResponse;
+        }).collect(Collectors.toList());
     }
 
     @GetMapping(value = "/{uuid}", produces = "application/json")
@@ -56,12 +72,15 @@ public class TortoiseHabitatController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved tortoise habitat details",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = TortoiseHabitat.class))),
+                                    schema = @Schema(implementation = TortoiseHabitatResponse.class))),
                     @ApiResponse(responseCode = "404", description = "Tortoise habitat not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public TortoiseHabitat getTortoiseHabitatByUuid(@PathVariable UUID uuid) {
-        return tortoiseHabitatService.getTortoiseHabitatByUuid(uuid);
+    public TortoiseHabitatResponse getTortoiseHabitatByUuid(@PathVariable UUID uuid) {
+        TortoiseHabitat tortoiseHabitat = tortoiseHabitatService.getTortoiseHabitatByUuid(uuid);
+        TortoiseHabitatResponse tortoiseHabitatResponse = new TortoiseHabitatResponse();
+        tortoiseHabitatResponse.fromTortoiseHabitat(tortoiseHabitat);
+        return tortoiseHabitatResponse;
     }
 
     @PutMapping(value = "/{uuid}", produces = "application/json")
@@ -70,14 +89,19 @@ public class TortoiseHabitatController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Tortoise habitat updated successfully",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = TortoiseHabitat.class))),
+                                    schema = @Schema(implementation = TortoiseHabitatResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Tortoise habitat not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public TortoiseHabitat updateTortoiseHabitat(@PathVariable UUID uuid, @RequestBody TortoiseHabitat tortoiseHabitat) {
-        return tortoiseHabitatService.updateTortoiseHabitat(uuid, tortoiseHabitat);
+    public TortoiseHabitatResponse updateTortoiseHabitat(@PathVariable UUID uuid, @RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
+        TortoiseHabitat tortoiseHabitat = new TortoiseHabitat();
+        tortoiseHabitatRequest.toTortoiseHabitat(tortoiseHabitat, tortoiseService, environmentalConditionService);
+        tortoiseHabitatService.updateTortoiseHabitat(uuid, tortoiseHabitat);
+        TortoiseHabitatResponse tortoiseHabitatResponse = new TortoiseHabitatResponse();
+        tortoiseHabitatResponse.fromTortoiseHabitat(tortoiseHabitat);
+        return tortoiseHabitatResponse;
     }
 
     @DeleteMapping(value = "/{uuid}", produces = "application/json")
