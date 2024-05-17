@@ -31,7 +31,7 @@ public class Tortoise {
 
     private String healthStatus;
 
-    @OneToMany(mappedBy = "tortoise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "tortoise", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ActivityLog> activityLogs = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

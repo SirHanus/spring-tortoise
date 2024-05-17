@@ -13,7 +13,6 @@ import java.util.UUID;
 @Data
 public class ActivityLogRequest {
 
-    private UUID uuid;
 
     private UUID tortoiseId;
 
@@ -29,11 +28,12 @@ public class ActivityLogRequest {
     private String notes;
 
     public void toActivityLog(ActivityLog activityLog, TortoiseService tortoiseService) {
-        activityLog.setUuid(uuid);
         activityLog.setActivityType(activityType);
         activityLog.setStartTime(startTime);
         activityLog.setEndTime(endTime);
         activityLog.setNotes(notes);
-        activityLog.setTortoise(tortoiseService.getTortoiseById(this.tortoiseId));
+        if (tortoiseId != null) {
+            activityLog.setTortoise(tortoiseService.getTortoiseById(this.tortoiseId));
+        }
     }
 }

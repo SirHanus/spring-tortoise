@@ -24,7 +24,6 @@ public class EnvironmentalConditionRequest {
     @NotNull(message = "Timestamp is required")
     private LocalDateTime timestamp;
 
-    @NotNull(message = "tortoiseHabitatID is required")
     private UUID tortoiseHabitatID;
 
     public void toEnvironmentalCondition(EnvironmentalCondition environmentalCondition, TortoiseHabitatService tortoiseHabitatService) {
@@ -32,7 +31,9 @@ public class EnvironmentalConditionRequest {
         environmentalCondition.setHumidity(humidity);
         environmentalCondition.setLightLevel(lightLevel);
         environmentalCondition.setTimestamp(timestamp);
-        TortoiseHabitat tortoiseHabitat = tortoiseHabitatService.getTortoiseHabitatByUuid(tortoiseHabitatID);
-        environmentalCondition.setHabitat(tortoiseHabitat);
+        if (tortoiseHabitatID != null) {
+            TortoiseHabitat tortoiseHabitat = tortoiseHabitatService.getTortoiseHabitatByUuid(tortoiseHabitatID);
+            environmentalCondition.setHabitat(tortoiseHabitat);
+        }
     }
 }

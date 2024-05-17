@@ -10,9 +10,6 @@ import java.util.UUID;
 @Data
 public class ActivityLogResponse {
 
-
-    private UUID uuid;
-
     private UUID tortoiseId;
 
     @NotNull(message = "Activity type is required")
