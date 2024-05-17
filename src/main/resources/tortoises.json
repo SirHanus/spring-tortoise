@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Gustaf",
+    "species": "HERMANN",
+    "age": 2,
+    "healthStatus": "Perfectly fine",
+    "activityLogIDs": [],
+    "habitatID": null
+  },
+  {
+    "name": "Lu",
+    "species": "HERMANN",
+    "age": 2,
+    "healthStatus": "Healthy",
+    "activityLogIDs": [],
+    "habitatID": null
+  },
+  {
+    "name": "Pavel",
+    "species": "HERMANN",
+    "age": 3,
+    "healthStatus": "Healthy",
+    "activityLogIDs": [],
+    "habitatID": null
+  }
+]

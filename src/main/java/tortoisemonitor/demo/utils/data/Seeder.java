@@ -1,21 +1,25 @@
 package tortoisemonitor.demo.utils.data;
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitat;
+import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitatRequest;
 import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitatService;
 import tortoisemonitor.demo.domain.activity_log.ActivityLog;
 import tortoisemonitor.demo.domain.activity_log.ActivityLogService;
-import tortoisemonitor.demo.domain.activity_log.ActivityType;
 import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalCondition;
 import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalConditionService;
 import tortoisemonitor.demo.domain.tortoise.Tortoise;
+import tortoisemonitor.demo.domain.tortoise.TortoiseRequest;
 import tortoisemonitor.demo.domain.tortoise.TortoiseService;
-import tortoisemonitor.demo.domain.tortoise.TortoiseSpecies;
 
-import java.time.LocalDateTime;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -42,45 +46,82 @@ public class Seeder {
             log.info("Data already seeded...");
             return;
         }
-        TortoiseHabitat tortoiseHabitat = new TortoiseHabitat();
-        tortoiseHabitat.setName("Terarium1");
 
-        tortoiseHabitatService.createTortoiseHabitat(tortoiseHabitat);
-
-        EnvironmentalCondition environmentalCondition = new EnvironmentalCondition();
-        environmentalCondition.setHabitat(tortoiseHabitat);
-        environmentalCondition.setTimestamp(LocalDateTime.now());
-        environmentalCondition.setTemperature(30.2);
-        environmentalCondition.setLightLevel(10.1);
-        environmentalCondition.setHumidity(10.2);
-
-        environmentalConditionService.createEnvironmentalCondition(environmentalCondition);
-
-        Tortoise tortoise1 = new Tortoise();
-        tortoise1.setHabitat(tortoiseHabitat);
-        tortoise1.setSpecies(TortoiseSpecies.HERMANN);
-        tortoise1.setName("Skvrnin");
-        tortoise1.setAge(2);
-        tortoise1.setHealthStatus("Perfectly fine");
-        tortoiseService.createTortoise(tortoise1);
-
-        ActivityLog activityLog = new ActivityLog();
-        activityLog.setActivityType(ActivityType.BASKING);
-        activityLog.setNotes("asd");
-        activityLog.setStartTime(LocalDateTime.now());
-        activityLog.setEndTime(LocalDateTime.now());
-        activityLogService.createActivityLog(activityLog);
-
-
-        activityLog.setTortoise(tortoise1);
-        tortoise1.addActivityLog(activityLog);
-        tortoiseService.updateTortoise(tortoise1.getUuid(), tortoise1);
-        activityLogService.updateActivityLog(activityLog.getUuid(), activityLog);
-
-        tortoiseHabitat.addTortoise(tortoise1);
-        tortoiseHabitat.addEnvironmentalCondition(environmentalCondition);
-
-        tortoiseHabitatService.updateTortoiseHabitat(tortoiseHabitat.getUuid(), tortoiseHabitat);
+        log.info("Seeding data from JSON files...");
+        importDataFromJson();
     }
 
+    private void importDataFromJson() {
+        importTortoiseHabitats("tortoiseHabitats.json");
+        importTortoises("tortoises.json");
+        linkTortoisesToHabitats();
+    }
+
+    private void importTortoises(String path) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = new ClassPathResource(path).getInputStream();
+            TortoiseRequest[] tortoiseRequests = objectMapper.readValue(inputStream, TortoiseRequest[].class);
+            for (TortoiseRequest tortoiseRequest : tortoiseRequests) {
+                Tortoise tortoise = new Tortoise();
+                tortoise.setName(tortoiseRequest.getName());
+                tortoise.setSpecies(tortoiseRequest.getSpecies());
+                tortoise.setAge(tortoiseRequest.getAge());
+                tortoise.setHealthStatus(tortoiseRequest.getHealthStatus());
+                tortoiseService.createTortoise(tortoise);
+            }
+        } catch (IOException e) {
+            log.error("Failed to import tortoises from JSON file", e);
+        }
+    }
+
+    private void importTortoiseHabitats(String path) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            InputStream inputStream = new ClassPathResource(path).getInputStream();
+            TortoiseHabitatRequest[] habitatRequests = objectMapper.readValue(inputStream, TortoiseHabitatRequest[].class);
+            for (TortoiseHabitatRequest habitatRequest : habitatRequests) {
+                TortoiseHabitat habitat = new TortoiseHabitat();
+                habitat.setName(habitatRequest.getName());
+                tortoiseHabitatService.createTortoiseHabitat(habitat);
+            }
+        } catch (IOException e) {
+            log.error("Failed to import tortoise habitats from JSON file", e);
+        }
+    }
+
+    private void linkTortoisesToHabitats() {
+//        Map<String, Tortoise> tortoiseMap = new HashMap<>();
+//        for (Tortoise tortoise : tortoiseService.getAllTortoises()) {
+//            tortoiseMap.put(tortoise.getName(), tortoise);
+//        }
+//
+//        Map<String, TortoiseHabitat> habitatMap = new HashMap<>();
+//        for (TortoiseHabitat habitat : tortoiseHabitatService.getAllTortoiseHabitats()) {
+//            habitatMap.put(habitat.getName(), habitat);
+//        }
+//
+//        // Update relationships
+//        try {
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            InputStream inputStream = new ClassPathResource("data/tortoises.json").getInputStream();
+//            TortoiseRequest[] tortoiseRequests = objectMapper.readValue(inputStream, TortoiseRequest[].class);
+//            for (TortoiseRequest tortoiseRequest : tortoiseRequests) {
+//                Tortoise tortoise = tortoiseMap.get(tortoiseRequest.getName());
+//                if (tortoiseRequest.getHabitatID() != null) {
+//                    TortoiseHabitat habitat = habitatMap.get(tortoiseRequest.getHabitatID().toString());
+//                    tortoise.setHabitat(habitat);
+//                    tortoiseService.updateTortoise(tortoise.getUuid(), tortoise);
+//                }
+//
+//                for (UUID activityLogID : tortoiseRequest.getActivityLogIDs()) {
+//                    ActivityLog activityLog = activityLogService.getActivityLogById(activityLogID);
+//                    activityLog.setTortoise(tortoise);
+//                    activityLogService.updateActivityLog(activityLog.getUuid(), activityLog);
+//                }
+//            }
+//        } catch (IOException e) {
+//            log.error("Failed to link tortoises to habitats", e);
+//        }
+    }
 }
