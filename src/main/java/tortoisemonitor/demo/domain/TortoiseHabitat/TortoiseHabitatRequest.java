@@ -1,6 +1,7 @@
 package tortoisemonitor.demo.domain.TortoiseHabitat;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalCondition;
 import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalConditionService;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 
 @Data
+@AllArgsConstructor
 public class TortoiseHabitatRequest {
 
     private String name;

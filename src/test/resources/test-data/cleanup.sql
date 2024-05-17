@@ -1,0 +1,4 @@
+TRUNCATE TABLE activity_log CASCADE;
+TRUNCATE TABLE environmental_condition CASCADE;
+TRUNCATE TABLE tortoise CASCADE;
+TRUNCATE TABLE tortoise_habitat CASCADE;
