@@ -32,7 +32,7 @@ public class ActivityLogController {
 
     @PostMapping(value = "", produces = "application/json")
     @Operation(summary = "Log a new activity for a tortoise",
-            description = "Log a new activity for a tortoise.",
+            description = "Log a new activity for a tortoise. If no ID is specified it links to the newest tortoise in DB",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Activity logged successfully",
                             content = @Content(mediaType = "application/json",

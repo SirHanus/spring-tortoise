@@ -43,8 +43,8 @@ public class TortoiseHabitatController {
     @ResponseStatus(HttpStatus.CREATED)
     public TortoiseHabitatResponse createTortoiseHabitat(@RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
         TortoiseHabitat tortoiseHabitat = new TortoiseHabitat();
-        tortoiseHabitatRequest.toTortoiseHabitat(tortoiseHabitat, tortoiseService, environmentalConditionService);
-        tortoiseHabitatService.createTortoiseHabitat(tortoiseHabitat);
+        tortoiseHabitatRequest.toTortoiseHabitat(tortoiseHabitat);
+        tortoiseHabitat = tortoiseHabitatService.createTortoiseHabitat(tortoiseHabitat);
         TortoiseHabitatResponse tortoiseHabitatResponse = new TortoiseHabitatResponse();
         tortoiseHabitatResponse.fromTortoiseHabitat(tortoiseHabitat);
         return tortoiseHabitatResponse;
@@ -97,7 +97,7 @@ public class TortoiseHabitatController {
     @ResponseStatus(HttpStatus.OK)
     public TortoiseHabitatResponse updateTortoiseHabitat(@PathVariable UUID uuid, @RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
         TortoiseHabitat tortoiseHabitat = new TortoiseHabitat();
-        tortoiseHabitatRequest.toTortoiseHabitat(tortoiseHabitat, tortoiseService, environmentalConditionService);
+        tortoiseHabitatRequest.toTortoiseHabitat(tortoiseHabitat);
         tortoiseHabitatService.updateTortoiseHabitat(uuid, tortoiseHabitat);
         TortoiseHabitatResponse tortoiseHabitatResponse = new TortoiseHabitatResponse();
         tortoiseHabitatResponse.fromTortoiseHabitat(tortoiseHabitat);

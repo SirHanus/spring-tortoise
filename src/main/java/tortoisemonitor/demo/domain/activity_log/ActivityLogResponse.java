@@ -10,6 +10,8 @@ import java.util.UUID;
 @Data
 public class ActivityLogResponse {
 
+    private UUID uuid;
+
     private UUID tortoiseId;
 
     @NotNull(message = "Activity type is required")
@@ -24,6 +26,7 @@ public class ActivityLogResponse {
     private String notes;
 
     public void fromActivityLog(ActivityLog activityLog){
+        this.uuid = activityLog.getUuid();
         this.tortoiseId = activityLog.getTortoise().getUuid();
         this.activityType = activityLog.getActivityType();
         this.startTime = activityLog.getStartTime();

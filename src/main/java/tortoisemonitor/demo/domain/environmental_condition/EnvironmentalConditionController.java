@@ -30,7 +30,7 @@ public class EnvironmentalConditionController {
 
     @PostMapping(value = "", produces = "application/json")
     @Operation(summary = "Log new environmental conditions",
-            description = "Log new environmental conditions",
+            description = "Log new environmental conditions. If no ID is specified it links to the newest tortoise habitat in DB",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Environmental condition logged successfully",
                             content = @Content(mediaType = "application/json",

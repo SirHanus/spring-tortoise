@@ -40,6 +40,8 @@ public class ActivityLogRequest {
         activityLog.setNotes(notes);
         if (tortoiseId != null) {
             activityLog.setTortoise(tortoiseService.getTortoiseById(this.tortoiseId));
+        } else if (!tortoiseService.getAllTortoises().isEmpty()){
+            activityLog.setTortoise(tortoiseService.getAllTortoises().getLast());
         }
     }
 }

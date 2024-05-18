@@ -24,8 +24,8 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
                 .then()
                 .statusCode(200)
                 .body("size()", is(4))
-                .body("temperature", everyItem(greaterThanOrEqualTo(19.0f)))
-                .body("temperature", everyItem(lessThanOrEqualTo(24.0f)));
+                .body("temperature", everyItem(greaterThanOrEqualTo(20.0f)))
+                .body("temperature", everyItem(lessThanOrEqualTo(26.0f)));
     }
 
     @Test
@@ -33,7 +33,7 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
         var newEnvironmentalCondition = new EnvironmentalConditionRequest(
                 22.0, 70.0, 12.0,
                 LocalDateTime.of(2024, 1, 1, 10, 0, 0), null);
-        UUID id = given()
+        String stringId = given()
                 .contentType(ContentType.JSON)
                 .body(newEnvironmentalCondition)
                 .when()
@@ -43,6 +43,8 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
                 .extract()
                 .path("uuid");
 
+        UUID id = UUID.fromString(stringId);
+
         when()
                 .get("/environment/" + id)
                 .then()
@@ -51,8 +53,7 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
                 .body("temperature", is(22.0f))
                 .body("humidity", is(70.0f))
                 .body("lightLevel", is(12.0f))
-                .body("timestamp", is("2024-01-01T10:00:00"))
-                .body("habitatId", is("habitat-uuid1"));
+                .body("timestamp", is("2024-01-01T10:00:00"));
     }
 
     // More tests...

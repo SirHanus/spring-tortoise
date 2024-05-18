@@ -31,8 +31,8 @@ public class TortoiseIntegrationTest extends BaseIntegrationTest {
     public void testCreateTortoise() {
         var newTortoise = new TortoiseRequest("Tortoise4",
                 TortoiseSpecies.HERMANN, 5,
-                "Healthy", null, null);
-        UUID id = given()
+                "Healthy", "Habitat1");
+        String string = given()
                 .contentType(ContentType.JSON)
                 .body(newTortoise)
                 .when()
@@ -42,16 +42,18 @@ public class TortoiseIntegrationTest extends BaseIntegrationTest {
                 .extract()
                 .path("uuid");
 
+        UUID id = UUID.fromString(string);
+
         when()
                 .get("/tortoises/" + id)
                 .then()
                 .statusCode(200)
                 .body("uuid", is(id.toString()))
                 .body("name", is("Tortoise4"))
-                .body("species", is("SPECIES1"))
+                .body("species", is("HERMANN"))
                 .body("age", is(5))
                 .body("healthStatus", is("Healthy"))
-                .body("habitatId", is("habitat-uuid1"));
+                .body("habitatName", is("Habitat1"));
     }
 
     // More tests...

@@ -15,6 +15,8 @@ import java.util.UUID;
 @Data
 public class TortoiseHabitatResponse {
 
+    private UUID uuid;
+
     private String name;
 
     private List<UUID> tortoiseIDs = new ArrayList<>();
@@ -22,6 +24,7 @@ public class TortoiseHabitatResponse {
     private List<UUID> environmentalConditionsIDs = new ArrayList<>();
 
     public void fromTortoiseHabitat(TortoiseHabitat tortoiseHabitat) {
+        this.uuid = tortoiseHabitat.getUuid();
         this.name = tortoiseHabitat.getName();
         this.tortoiseIDs = tortoiseHabitat.getTortoises().stream().map(Tortoise::getUuid).toList();
         this.environmentalConditionsIDs = tortoiseHabitat.getEnvironmentalConditions().stream().map(EnvironmentalCondition::getUuid).toList();

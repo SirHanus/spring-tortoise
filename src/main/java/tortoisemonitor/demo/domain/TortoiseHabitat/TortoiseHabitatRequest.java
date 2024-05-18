@@ -1,8 +1,11 @@
 package tortoisemonitor.demo.domain.TortoiseHabitat;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalCondition;
 import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalConditionService;
 import tortoisemonitor.demo.domain.tortoise.Tortoise;
@@ -15,18 +18,13 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class TortoiseHabitatRequest {
 
+    @NotEmpty
     private String name;
 
-    private List<UUID> tortoiseIDs = new ArrayList<>();
-
-    private List<UUID> environmentalConditionsIDs = new ArrayList<>();
-
-    public void toTortoiseHabitat(TortoiseHabitat tortoiseHabitat, TortoiseService tortoiseService, EnvironmentalConditionService environmentalConditionService) {
+    public void toTortoiseHabitat(TortoiseHabitat tortoiseHabitat) {
         tortoiseHabitat.setName(name);
-        List<Tortoise> tortoises = this.tortoiseIDs.stream().map(tortoiseService::getTortoiseById).toList();
-        tortoiseHabitat.setTortoises(tortoises);
-        tortoiseHabitat.setEnvironmentalConditions(this.environmentalConditionsIDs.stream().map(environmentalConditionService::getEnvironmentalConditionById).toList());
     }
 }

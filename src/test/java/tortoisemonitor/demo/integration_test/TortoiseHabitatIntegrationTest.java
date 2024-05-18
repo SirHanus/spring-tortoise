@@ -28,8 +28,8 @@ public class TortoiseHabitatIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testCreateHabitat() {
-        var newHabitat = new TortoiseHabitatRequest("Habitat3", null, null);
-        UUID id = given()
+        var newHabitat = new TortoiseHabitatRequest("Habitat3");
+        String stringId = given()
                 .contentType(ContentType.JSON)
                 .body(newHabitat)
                 .when()
@@ -38,6 +38,8 @@ public class TortoiseHabitatIntegrationTest extends BaseIntegrationTest {
                 .statusCode(201)
                 .extract()
                 .path("uuid");
+
+        UUID id = UUID.fromString(stringId);
 
         when()
                 .get("/tortoiseHabitats/" + id)

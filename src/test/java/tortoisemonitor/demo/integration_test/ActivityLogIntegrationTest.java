@@ -31,12 +31,12 @@ public class ActivityLogIntegrationTest extends BaseIntegrationTest {
     @Test
     public void testCreateActivityLog() {
         var newActivityLog = new ActivityLogRequest(
-                UUID.fromString("4ed4166b-bde4-4ff9-8f9f-b6e7a79d5aaa"),
+                null,
                 ActivityType.FEEDING,
                 LocalDateTime.of(2024, 1, 1, 10, 0, 0),
                 LocalDateTime.of(2024, 1, 1, 10, 30, 0),
                 "Feeding time");
-        UUID id = given()
+        String idString = given()
                 .contentType(ContentType.JSON)
                 .body(newActivityLog)
                 .when()
@@ -45,6 +45,8 @@ public class ActivityLogIntegrationTest extends BaseIntegrationTest {
                 .statusCode(201)
                 .extract()
                 .path("uuid");
+
+        UUID id = UUID.fromString(idString);
 
         when()
                 .get("/activityLogs/" + id)

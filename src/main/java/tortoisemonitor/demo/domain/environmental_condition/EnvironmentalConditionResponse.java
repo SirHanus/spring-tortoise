@@ -11,6 +11,8 @@ import java.util.UUID;
 @Data
 public class EnvironmentalConditionResponse {
 
+    private UUID uuid;
+
     @NotNull(message = "Temperature is required")
     private Double temperature;
 
@@ -27,6 +29,7 @@ public class EnvironmentalConditionResponse {
     private UUID tortoiseHabitatID;
 
     public void fromEnvironmentalConditionResponse(EnvironmentalCondition environmentalCondition) {
+        this.uuid = environmentalCondition.getUuid();
         this.temperature = environmentalCondition.getTemperature();
         this.humidity = environmentalCondition.getHumidity();
         this.lightLevel = environmentalCondition.getLightLevel();

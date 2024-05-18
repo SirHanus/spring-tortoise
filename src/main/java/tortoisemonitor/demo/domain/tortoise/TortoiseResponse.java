@@ -15,6 +15,7 @@ import java.util.UUID;
 @Data
 public class TortoiseResponse {
 
+    private UUID uuid;
 
     @NotBlank(message = "Name is required")
     private String name;
@@ -29,14 +30,15 @@ public class TortoiseResponse {
 
     private List<UUID> activityLogIDs = new ArrayList<>();
 
-    private UUID habitatID;
+    private String habitatName;
 
     public void fromTortoise(Tortoise tortoise) {
+        this.uuid = tortoise.getUuid();
         this.name = tortoise.getName();
         this.species = tortoise.getSpecies();
         this.age = tortoise.getAge();
         this.healthStatus = tortoise.getHealthStatus();
         this.activityLogIDs = tortoise.getActivityLogs().stream().map(ActivityLog::getUuid).toList();
-        this.habitatID = tortoise.getHabitat().getUuid();
+        this.habitatName = tortoise.getHabitat().getName();
     }
 }
