@@ -24,8 +24,9 @@ public class ActivityLogIntegrationTest extends BaseIntegrationTest {
                 .get("/activityLogs")
                 .then()
                 .statusCode(200)
-                .body("size()", is(5))
-                .body("activityType", containsInAnyOrder("FEEDING", "BASKING", "SLEEPING", "EXPLORING", "SWIMMING"));
+                .body("size()", is(15))
+                .body("activityType", containsInAnyOrder("FEEDING", "BASKING", "SLEEPING", "EXPLORING", "FEEDING", "BASKING", "FEEDING", "SWIMMING", "BASKING", "SLEEPING", "SLEEPING", "SLEEPING", "SWIMMING", "FEEDING", "BASKING"
+                ));
     }
 
     @Test

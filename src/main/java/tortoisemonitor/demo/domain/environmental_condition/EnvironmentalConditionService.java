@@ -68,6 +68,8 @@ public class EnvironmentalConditionService {
                 sum += temp;
             }
             double average = sum / temperatures.size();
+            average = Math.round(average * 100.0) / 100.0; // Round to 2 decimal points
+
             TortoiseHabitat habitat = tortoiseHabitatService.getTortoiseHabitatByUuid(habitatId);
             String key = habitat.getUuid().toString() + " - " + habitat.getName();
             averageTemperatures.put(key, average);
@@ -75,4 +77,5 @@ public class EnvironmentalConditionService {
 
         return averageTemperatures;
     }
+
 }

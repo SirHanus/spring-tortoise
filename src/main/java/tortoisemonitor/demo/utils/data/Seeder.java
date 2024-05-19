@@ -56,9 +56,9 @@ public class Seeder {
     private void importDataFromJson() {
         importTortoiseHabitats("tortoiseHabitats.json");
         importTortoises("tortoises.json");
+        linkTortoisesToHabitats();
         importEnvironmentalConditions("environmentalConditions.json");
         importActivityLogs("activityLogs.json");
-        linkTortoisesToHabitats();
         linkEnvironmentalConditions();
         linkActivityLogsToTortoises();
     }

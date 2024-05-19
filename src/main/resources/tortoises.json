@@ -4,23 +4,27 @@
     "species": "HERMANN",
     "age": 2,
     "healthStatus": "Perfectly fine",
-    "activityLogIDs": [],
-    "habitatID": null
+    "habitatName": null
   },
   {
     "name": "Lu",
     "species": "HERMANN",
     "age": 2,
     "healthStatus": "Healthy",
-    "activityLogIDs": [],
-    "habitatID": null
+    "habitatName": null
   },
   {
     "name": "Pavel",
     "species": "HERMANN",
     "age": 3,
     "healthStatus": "Healthy",
-    "activityLogIDs": [],
-    "habitatID": null
+    "habitatName": null
+  },
+  {
+    "name": "Kveta",
+    "species": "SULCATA",
+    "age": 8,
+    "healthStatus": "Minor issues with shell",
+    "habitatName": null
   }
 ]
