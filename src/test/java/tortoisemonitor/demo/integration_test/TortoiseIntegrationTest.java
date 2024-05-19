@@ -28,11 +28,26 @@ public class TortoiseIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
+    public void testCreateTortoiseInvalidRequest() {
+        var newTortoise = new TortoiseRequest("Tortoise4",
+                TortoiseSpecies.HERMANN, 5,
+                "Healthy", "11111111-1111-1111-1111-111111111111");
+        given()
+                .contentType(ContentType.JSON)
+                .body(newTortoise)
+                .when()
+                .post("/tortoises")
+                .then()
+                .statusCode(400);
+
+    }
+
+    @Test
     public void testCreateTortoise() {
         var newTortoise = new TortoiseRequest("Tortoise4",
                 TortoiseSpecies.HERMANN, 5,
                 "Healthy", "Habitat1");
-        String string = given()
+        String stringId = given()
                 .contentType(ContentType.JSON)
                 .body(newTortoise)
                 .when()
@@ -42,7 +57,7 @@ public class TortoiseIntegrationTest extends BaseIntegrationTest {
                 .extract()
                 .path("uuid");
 
-        UUID id = UUID.fromString(string);
+        UUID id = UUID.fromString(stringId);
 
         when()
                 .get("/tortoises/" + id)
@@ -56,5 +71,90 @@ public class TortoiseIntegrationTest extends BaseIntegrationTest {
                 .body("habitatName", is("Habitat1"));
     }
 
-    // More tests...
+    @Test
+    public void testGetTortoiseById() {
+        UUID id = UUID.fromString("33333333-3333-3333-3333-333333333333"); // Use a valid UUID from setup data
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .get("/tortoises/{id}")
+                .then()
+                .statusCode(200)
+                .body("uuid", is(id.toString()))
+                .body("name", is("Tortoise1"))
+                .body("species", is("HERMANN"))
+                .body("age", is(5))
+                .body("healthStatus", is("Healthy"))
+                .body("habitatName", is("Habitat1"));
+    }
+
+    @Test
+    public void testGetTortoiseByInvalidId() {
+        UUID invalidId = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"); // Non-existent ID
+
+        given()
+                .pathParam("id", invalidId)
+                .when()
+                .get("/tortoises/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testUpdateTortoise() {
+        UUID id = UUID.fromString("33333333-3333-3333-3333-333333333333"); // Assume this ID exists
+        var updatedTortoise = new TortoiseRequest("UpdatedTortoise1",
+                TortoiseSpecies.HERMANN, 6,
+                "Healthy", "Habitat1");
+
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", id)
+                .body(updatedTortoise)
+                .when()
+                .put("/tortoises/{id}")
+                .then()
+                .statusCode(200)
+                .body("name", is("UpdatedTortoise1"))
+                .body("species", is("HERMANN"))
+                .body("age", is(6))
+                .body("healthStatus", is("Healthy"))
+                .body("habitatName", is("Habitat1"));
+    }
+
+    @Test
+    public void testDeleteTortoise() {
+        UUID id = UUID.fromString("33333333-3333-3333-3333-333333333333"); // Assume this ID exists
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .delete("/tortoises/{id}")
+                .then()
+                .statusCode(200);
+
+        // Optionally, verify it's actually deleted
+        given()
+                .pathParam("id", id)
+                .when()
+                .get("/tortoises/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testCreateTortoiseWithInvalidData() {
+        var invalidTortoise = new TortoiseRequest(null,
+                null, null,
+                null, null);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(invalidTortoise)
+                .when()
+                .post("/tortoises")
+                .then()
+                .statusCode(400);
+    }
 }

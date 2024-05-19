@@ -5,8 +5,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitatService;
 
@@ -17,6 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/environment")
 @Tag(name = "Environmental Conditions", description = "Operations related to Environmental Conditions")
+@Validated
 public class EnvironmentalConditionController {
 
     private final EnvironmentalConditionService environmentalConditionService;
@@ -38,7 +41,7 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
-    public EnvironmentalConditionResponse logEnvironmentalCondition(@RequestBody EnvironmentalConditionRequest environmentalConditionRequest) {
+    public EnvironmentalConditionResponse logEnvironmentalCondition(@Valid @RequestBody EnvironmentalConditionRequest environmentalConditionRequest) {
         EnvironmentalCondition environmentalCondition = new EnvironmentalCondition();
         environmentalConditionRequest.toEnvironmentalCondition(environmentalCondition, tortoiseHabitatService);
         EnvironmentalCondition createdEnvironmentalCondition = environmentalConditionService.createEnvironmentalCondition(environmentalCondition);
@@ -95,7 +98,7 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public EnvironmentalConditionResponse updateEnvironmentalCondition(@PathVariable UUID id, @RequestBody EnvironmentalConditionRequest environmentalConditionRequest) {
+    public EnvironmentalConditionResponse updateEnvironmentalCondition(@Valid @PathVariable UUID id, @Valid @RequestBody EnvironmentalConditionRequest environmentalConditionRequest) {
         EnvironmentalCondition environmentalCondition = new EnvironmentalCondition();
         environmentalConditionRequest.toEnvironmentalCondition(environmentalCondition, tortoiseHabitatService);
         environmentalConditionService.updateEnvironmentalCondition(id, environmentalCondition);
@@ -114,7 +117,7 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteEnvironmentalCondition(@PathVariable UUID id) {
+    public void deleteEnvironmentalCondition(@Valid @PathVariable UUID id) {
         environmentalConditionService.deleteEnvironmentalCondition(id);
     }
 }

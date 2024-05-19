@@ -1,6 +1,7 @@
 package tortoisemonitor.demo.domain.environmental_condition;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +21,11 @@ public class EnvironmentalConditionRequest {
     private Double temperature;
 
     @NotNull(message = "Humidity is required")
+    @Min(0)
     private Double humidity;
 
     @NotNull(message = "Light level is required")
+    @Min(0)
     private Double lightLevel;
 
     @NotNull(message = "Timestamp is required")

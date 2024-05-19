@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -40,7 +41,7 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
-    public ActivityLogResponse logActivity(@RequestBody ActivityLogRequest activityLogRequest) {
+    public ActivityLogResponse logActivity(@Valid @RequestBody ActivityLogRequest activityLogRequest) {
         ActivityLog activityLog = new ActivityLog();
         activityLogRequest.toActivityLog(activityLog, tortoiseService);
         ActivityLog createdActivityLog = activityLogService.createActivityLog(activityLog);
@@ -94,7 +95,7 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public ActivityLogResponse updateActivity(@PathVariable UUID id, @RequestBody ActivityLogRequest activityLogRequest) {
+    public ActivityLogResponse updateActivity(@Valid @PathVariable UUID id, @Valid @RequestBody ActivityLogRequest activityLogRequest) {
         ActivityLog activityLog = new ActivityLog();
         activityLogRequest.toActivityLog(activityLog, tortoiseService);
         ActivityLog updatedActivityLog = activityLogService.updateActivityLog(id, activityLog);
@@ -113,7 +114,7 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteActivity(@PathVariable UUID id) {
+    public void deleteActivity(@Valid @PathVariable UUID id) {
         activityLogService.deleteActivityLog(id);
     }
 }

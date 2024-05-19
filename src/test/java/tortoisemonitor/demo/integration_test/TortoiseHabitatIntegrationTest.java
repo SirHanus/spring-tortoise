@@ -49,6 +49,103 @@ public class TortoiseHabitatIntegrationTest extends BaseIntegrationTest {
                 .body("name", is("Habitat3"));
     }
 
-    // More tests...
-}
+    @Test
+    public void testCreateHabitatInvalidRequestNull() {
+        var newHabitat = new TortoiseHabitatRequest(null);
+        given()
+                .contentType(ContentType.JSON)
+                .body(newHabitat)
+                .when()
+                .post("/tortoiseHabitats")
+                .then()
+                .statusCode(400);
 
+    }
+    @Test
+    public void testCreateHabitatInvalidRequestEmpty() {
+        var newHabitat = new TortoiseHabitatRequest("");
+        given()
+                .contentType(ContentType.JSON)
+                .body(newHabitat)
+                .when()
+                .post("/tortoiseHabitats")
+                .then()
+                .statusCode(400);
+
+    }
+
+    @Test
+    public void testGetHabitatById() {
+        UUID id = UUID.fromString("11111111-1111-1111-1111-111111111111"); // Use a valid UUID from setup data
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .get("/tortoiseHabitats/{id}")
+                .then()
+                .statusCode(200)
+                .body("uuid", is(id.toString()))
+                .body("name", is("Habitat1"));
+    }
+
+    @Test
+    public void testGetHabitatByInvalidId() {
+        UUID invalidId = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"); // Non-existent ID
+
+        given()
+                .pathParam("id", invalidId)
+                .when()
+                .get("/tortoiseHabitats/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testUpdateHabitat() {
+        UUID id = UUID.fromString("11111111-1111-1111-1111-111111111111"); // Assume this ID exists
+        var updatedHabitat = new TortoiseHabitatRequest("UpdatedHabitat1");
+
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", id)
+                .body(updatedHabitat)
+                .when()
+                .put("/tortoiseHabitats/{id}")
+                .then()
+                .statusCode(200)
+                .body("name", is("UpdatedHabitat1"));
+    }
+
+    @Test
+    public void testDeleteHabitat() {
+        UUID id = UUID.fromString("11111111-1111-1111-1111-111111111111"); // Assume this ID exists
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .delete("/tortoiseHabitats/{id}")
+                .then()
+                .statusCode(200);
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .get("/tortoiseHabitats/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testCreateHabitatWithInvalidData() {
+        // Attempt to create a habitat with missing required fields
+        var invalidHabitat = new TortoiseHabitatRequest(null);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(invalidHabitat)
+                .when()
+                .post("/tortoiseHabitats")
+                .then()
+                .statusCode(400); // Expecting a 400 Bad Request due to invalid input
+    }
+}

@@ -23,4 +23,13 @@ This project is designed to showcase the development of a robust application usi
 
 ## Installation
 
-tbd
+### Prerequisites
+
+- Ensure you have Docker installed on your machine. If not, download and install it from [Docker's official site](https://www.docker.com/get-started).
+
+### Docker Configuration
+
+Run the following command to start a PostgreSQL container:
+
+```bash
+docker run --name postgres -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=123 -p 5433:5432 -d postgres:latest

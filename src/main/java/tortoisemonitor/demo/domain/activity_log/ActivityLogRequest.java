@@ -1,6 +1,7 @@
 package tortoisemonitor.demo.domain.activity_log;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class ActivityLogRequest {
     private LocalDateTime endTime;
 
     @Size(max = 500, message = "Notes must be less than 500 characters")
+    @NotNull
     private String notes;
 
 

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class TortoiseController {
                     @ApiResponse(responseCode = "409", description = "Tortoise already exists",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
-    public TortoiseResponse createTortoise(@RequestBody TortoiseRequest tortoiseRequest) {
+    public TortoiseResponse createTortoise(@Valid @RequestBody TortoiseRequest tortoiseRequest) {
         Tortoise tortoise = new Tortoise();
         tortoiseRequest.toTortoise(tortoise, activityLogService, tortoiseHabitatService);
         tortoiseService.createTortoise(tortoise);
@@ -97,7 +98,7 @@ public class TortoiseController {
                     @ApiResponse(responseCode = "404", description = "Tortoise not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public TortoiseResponse updateTortoise(@PathVariable UUID id, @RequestBody TortoiseRequest tortoiseRequest) {
+    public TortoiseResponse updateTortoise(@Valid @PathVariable UUID id, @Valid @RequestBody TortoiseRequest tortoiseRequest) {
         Tortoise tortoise = new Tortoise();
         tortoiseRequest.toTortoise(tortoise, activityLogService, tortoiseHabitatService);
         tortoiseService.updateTortoise(id, tortoise);
@@ -115,7 +116,7 @@ public class TortoiseController {
                     @ApiResponse(responseCode = "404", description = "Tortoise not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTortoise(@PathVariable UUID id) {
+    public void deleteTortoise(@Valid @PathVariable UUID id) {
         tortoiseService.deleteTortoise(id);
     }
 }

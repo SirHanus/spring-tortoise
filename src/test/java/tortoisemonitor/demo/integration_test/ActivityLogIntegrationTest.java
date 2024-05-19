@@ -59,5 +59,88 @@ public class ActivityLogIntegrationTest extends BaseIntegrationTest {
                 .body("notes", is("Feeding time"));
     }
 
-    // More tests...
+    @Test
+    public void testCreateActivityLogInvalidRequest() {
+        var newActivityLog = new ActivityLogRequest(
+                null,
+                ActivityType.FEEDING,
+                LocalDateTime.of(2024, 1, 1, 10, 0, 0),
+                LocalDateTime.of(2024, 1, 1, 10, 30, 0),
+                null);
+        given()
+                .contentType(ContentType.JSON)
+                .body(newActivityLog)
+                .when()
+                .post("/activityLogs")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void testGetActivityById() {
+        UUID id = UUID.fromString("66666666-6666-6666-6666-666666666666"); // Use a valid UUID from setup data
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .get("/activityLogs/{id}")
+                .then()
+                .statusCode(200)
+                .body("uuid", is(id.toString()))
+                .body("activityType", is("FEEDING"));
+    }
+
+    @Test
+    public void testGetActivityByIdInvalid() {
+        UUID id = UUID.fromString("66666656-6666-6666-6666-666666666666"); // Use a valid UUID from setup data
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .get("/activityLogs/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void testUpdateActivity() {
+        UUID tortoiseId = UUID.fromString("55555555-5555-5555-5555-555555555555"); // Assume this ID exists
+        UUID activityId = UUID.fromString("66666666-6666-6666-6666-666666666666"); // Assume this ID exists
+        ActivityLogRequest updatedLog = new ActivityLogRequest(
+                tortoiseId, ActivityType.EXPLORING, LocalDateTime.of(2024, 1, 1, 12, 0, 0),
+                LocalDateTime.of(2024, 1, 1, 12, 30, 0), "Exploring time updated");
+
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("id", activityId)
+                .body(updatedLog)
+                .when()
+                .put("/activityLogs/{id}")
+                .then()
+                .statusCode(200)
+                .body("activityType", is("EXPLORING"))
+                .body("notes", is("Exploring time updated"));
+    }
+
+    @Test
+    public void testDeleteActivity() {
+        UUID id = UUID.fromString("66666666-6666-6666-6666-666666666666"); // Assume this ID exists
+
+        given()
+                .pathParam("id", id)
+                .when()
+                .delete("/activityLogs/{id}")
+                .then()
+                .statusCode(200);
+
+        // Optionally, verify it's actually deleted
+        given()
+                .pathParam("id", id)
+                .when()
+                .get("/activityLogs/{id}")
+                .then()
+                .statusCode(404);
+    }
+
+
 }

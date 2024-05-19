@@ -8,10 +8,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitat;
 import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitatService;
 import tortoisemonitor.demo.domain.activity_log.ActivityLog;
 import tortoisemonitor.demo.domain.activity_log.ActivityLogService;
+import tortoisemonitor.demo.utils.exceptions.InvalidDataException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Validated
 public class TortoiseRequest {
 
 
@@ -47,7 +50,12 @@ public class TortoiseRequest {
 
         if (!habitatName.isEmpty()) {
             Optional<TortoiseHabitat> maybeTortoiseHabitat = tortoiseHabitatService.getAllTortoiseHabitats().stream().filter(x -> x.getName().equals(habitatName)).findFirst();
-            maybeTortoiseHabitat.ifPresent(tortoise::setHabitat);
+            if (maybeTortoiseHabitat.isPresent()) {
+                tortoise.setHabitat(maybeTortoiseHabitat.get());
+            } else {
+                throw new InvalidDataException();
+            }
+
         }
     }
 }

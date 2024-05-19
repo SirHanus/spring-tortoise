@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class TortoiseHabitatController {
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
-    public TortoiseHabitatResponse createTortoiseHabitat(@RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
+    public TortoiseHabitatResponse createTortoiseHabitat(@Valid @RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
         TortoiseHabitat tortoiseHabitat = new TortoiseHabitat();
         tortoiseHabitatRequest.toTortoiseHabitat(tortoiseHabitat);
         tortoiseHabitat = tortoiseHabitatService.createTortoiseHabitat(tortoiseHabitat);
@@ -95,7 +96,7 @@ public class TortoiseHabitatController {
                     @ApiResponse(responseCode = "404", description = "Tortoise habitat not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public TortoiseHabitatResponse updateTortoiseHabitat(@PathVariable UUID uuid, @RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
+    public TortoiseHabitatResponse updateTortoiseHabitat(@Valid @PathVariable UUID uuid, @RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
         TortoiseHabitat tortoiseHabitat = new TortoiseHabitat();
         tortoiseHabitatRequest.toTortoiseHabitat(tortoiseHabitat);
         tortoiseHabitatService.updateTortoiseHabitat(uuid, tortoiseHabitat);
@@ -113,7 +114,7 @@ public class TortoiseHabitatController {
                     @ApiResponse(responseCode = "404", description = "Tortoise habitat not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTortoiseHabitat(@PathVariable UUID uuid) {
+    public void deleteTortoiseHabitat(@Valid @PathVariable UUID uuid) {
         tortoiseHabitatService.deleteTortoiseHabitat(uuid);
     }
 }
