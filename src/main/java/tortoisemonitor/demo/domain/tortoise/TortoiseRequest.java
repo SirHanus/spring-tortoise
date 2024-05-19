@@ -35,8 +35,10 @@ public class TortoiseRequest {
     private TortoiseSpecies species;
 
     @NotNull(message = "Age is required")
+    @PositiveOrZero(message = "Age cannot be negative")
     private Integer age;
 
+    // could be also ENUM
     private String healthStatus;
 
     @NotEmpty

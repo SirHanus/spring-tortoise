@@ -1,7 +1,10 @@
 package tortoisemonitor.demo.domain.TortoiseHabitat;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import tortoisemonitor.demo.domain.tortoise.Tortoise;
 import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalCondition;
 
@@ -11,6 +14,7 @@ import java.util.UUID;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class TortoiseHabitat {
 
     @Id
@@ -18,12 +22,15 @@ public class TortoiseHabitat {
     private UUID uuid;
 
     @Column(nullable = false)
+    @NotEmpty
     private String name;
 
     @OneToMany(mappedBy = "habitat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotNull
     private List<Tortoise> tortoises = new ArrayList<>();
 
     @OneToMany(mappedBy = "habitat", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotNull
     private List<EnvironmentalCondition> environmentalConditions = new ArrayList<>();
 
 

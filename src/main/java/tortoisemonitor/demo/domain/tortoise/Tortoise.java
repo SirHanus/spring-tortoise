@@ -38,7 +38,6 @@ public class Tortoise {
     @JoinColumn(name = "habitat_uuid")
     private TortoiseHabitat habitat;
 
-
     public void addActivityLog(ActivityLog activityLog) {
         activityLogs.add(activityLog);
     }

@@ -20,9 +20,11 @@ public class EnvironmentalCondition {
     private Double temperature;
 
     @NotNull(message = "Humidity is required")
+    @PositiveOrZero(message = "Humidity cannot be negative")
     private Double humidity;
 
     @NotNull(message = "Light level is required")
+    @PositiveOrZero(message = "Light level cannot be negative")
     private Double lightLevel;
 
     @NotNull(message = "Timestamp is required")
