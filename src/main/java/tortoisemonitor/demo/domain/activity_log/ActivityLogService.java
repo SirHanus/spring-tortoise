@@ -35,7 +35,8 @@ public class ActivityLogService {
     }
 
     public ActivityLog updateActivityLog(UUID id, ActivityLog activityLog) {
-        return activityLogRepository.findById(id)
+        Optional<ActivityLog> activityLogOptional = activityLogRepository.findById(id);
+        return activityLogOptional
                 .map(existingActivityLog -> {
                     // Copy properties from the new activity log to the existing one
                     existingActivityLog.setActivityType(activityLog.getActivityType());

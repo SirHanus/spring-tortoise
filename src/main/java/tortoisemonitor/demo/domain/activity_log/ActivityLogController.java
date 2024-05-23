@@ -99,7 +99,6 @@ public class ActivityLogController {
         ActivityLog activityLog = new ActivityLog();
         activityLogRequest.toActivityLog(activityLog, tortoiseService);
         ActivityLog updatedActivityLog = activityLogService.updateActivityLog(id, activityLog);
-
         ActivityLogResponse activityLogResponse = new ActivityLogResponse();
         activityLogResponse.fromActivityLog(updatedActivityLog);
         return activityLogResponse;

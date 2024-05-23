@@ -55,7 +55,7 @@ public class TortoiseRequest {
             if (maybeTortoiseHabitat.isPresent()) {
                 tortoise.setHabitat(maybeTortoiseHabitat.get());
             } else {
-                throw new InvalidDataException();
+                throw new InvalidDataException("Habitat name is invalid");
             }
 
         }

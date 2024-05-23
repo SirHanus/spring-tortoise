@@ -25,6 +25,7 @@ This project is designed to showcase the development of a robust application usi
 
 ### Prerequisites
 
+- JAVA 21+
 - Ensure you have Docker installed on your machine. If not, download and install it from [Docker's official site](https://www.docker.com/get-started).
 
 ### Docker Configuration
