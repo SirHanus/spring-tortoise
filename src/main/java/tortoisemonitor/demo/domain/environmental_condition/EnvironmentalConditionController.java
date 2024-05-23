@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitatService;
@@ -117,6 +118,7 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('owner')")
     public void deleteEnvironmentalCondition(@Valid @PathVariable UUID id) {
         environmentalConditionService.deleteEnvironmentalCondition(id);
     }
