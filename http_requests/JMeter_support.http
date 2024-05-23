@@ -1,0 +1,10 @@
+POST http://localhost:8090/activityLogs
+Content-Type: application/json
+
+{
+  "name": "TestTort",
+  "species": "SULCATA",
+  "age": 500,
+  "healthStatus": "TestHealth",
+  "habitatName": "LivingRoomTerrarium"
+}
