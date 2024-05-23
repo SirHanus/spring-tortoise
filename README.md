@@ -34,3 +34,7 @@ Run the following command to start a PostgreSQL container:
 
 ```bash
 docker run --name postgres -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=123 -p 5433:5432 -d postgres:latest
+```
+Run the following command to start a Keycloak container:
+```bash
+docker run -p 8050:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:24.0.4 start-dev```
