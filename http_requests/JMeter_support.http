@@ -1,16 +1,8 @@
-POST http://localhost:8090/activityLogs
-Content-Type: application/json
 
-{
-  "name": "TestTort",
-  "species": "SULCATA",
-  "age": 500,
-  "healthStatus": "TestHealth",
-  "habitatName": "LivingRoomTerrarium"
-}
-
-### Keycloack post
+### GET ACCESS TOKEN
 POST http://localhost:8050/realms/TortoiseManager/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
-client_id=tortoise-keeper&username=user&password=12345&grant_type=password
+client_id=tortoise-keeper&username=user&password=1234&grant_type=password
+
+

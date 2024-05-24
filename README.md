@@ -38,3 +38,6 @@ docker run --name postgres -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e 
 Run the following command to start a Keycloak container:
 ```bash
 docker run -p 8050:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:24.0.4 start-dev```
+
+docker run -p 8050:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:24.0.4 \
+    sh -c '/opt/keycloak/bin/kc.sh build --spi-events-listener-keycloak-property=enable-cors=true && /opt/keycloak/bin/kc.sh start-dev'

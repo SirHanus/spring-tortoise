@@ -115,7 +115,7 @@ public class TortoiseHabitatController {
                     @ApiResponse(responseCode = "404", description = "Tortoise habitat not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('owner')")
+//    @PreAuthorize("hasRole('owner')")
     public void deleteTortoiseHabitat(@Valid @PathVariable UUID uuid) {
         tortoiseHabitatService.deleteTortoiseHabitat(uuid);
     }

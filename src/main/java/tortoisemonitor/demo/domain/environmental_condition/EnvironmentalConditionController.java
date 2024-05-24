@@ -118,7 +118,7 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('owner')")
+//    @PreAuthorize("hasRole('owner')")
     public void deleteEnvironmentalCondition(@Valid @PathVariable UUID id) {
         environmentalConditionService.deleteEnvironmentalCondition(id);
     }

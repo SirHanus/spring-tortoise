@@ -114,7 +114,7 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('owner')")
+//    @PreAuthorize("hasRole('owner')")
     public void deleteActivity(@Valid @PathVariable UUID id) {
         activityLogService.deleteActivityLog(id);
     }
