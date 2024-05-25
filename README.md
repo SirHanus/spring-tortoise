@@ -48,3 +48,9 @@ docker exec -it keycloak-container /opt/keycloak/bin/kc.sh export --realm Tortoi
 
 docker cp keycloak-container:/tmp/export/TortoiseManager-realm.json D:\
 ```
+To import the Keycloak realm, use the following commands:
+```bash
+docker cp TortoiseManager-realm.json keycloak-container:/tmp/TortoiseManager-realm.json
+
+docker exec -it keycloak-container /opt/keycloak/bin/kc.sh import --file /tmp/TortoiseManager-realm.json
+```
