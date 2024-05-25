@@ -16,7 +16,10 @@ public class StatisticsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testGetAverageTemperaturePerHabitat() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         given()
+                .auth().oauth2(accessToken)
                 .when()
                 .get("/statistics/average-temperature")
                 .then()
@@ -28,7 +31,10 @@ public class StatisticsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testGetTotalActivityDurationPerTortoise() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         given()
+                .auth().oauth2(accessToken)
                 .when()
                 .get("/statistics/total-activity-duration")
                 .then()
@@ -41,7 +47,10 @@ public class StatisticsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testGetMostCommonActivityTypePerTortoise() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         given()
+                .auth().oauth2(accessToken)
                 .when()
                 .get("/statistics/most-common-activity")
                 .then()
@@ -54,7 +63,10 @@ public class StatisticsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testGetAverageAgePerHabitat() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         given()
+                .auth().oauth2(accessToken)
                 .when()
                 .get("/statistics/average-age")
                 .then()
@@ -66,7 +78,10 @@ public class StatisticsIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testGetActivityDistributionPerDay() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         given()
+                .auth().oauth2(accessToken)
                 .when()
                 .get("/statistics/activity-distribution")
                 .then()
@@ -77,5 +92,17 @@ public class StatisticsIntegrationTest extends BaseIntegrationTest {
                 .body(DayOfWeek.WEDNESDAY.toString(), is(3))
                 .body(DayOfWeek.THURSDAY.toString(), is(3))
                 .body(DayOfWeek.FRIDAY.toString(), is(3));
+    }
+
+    @Test
+    public void testInvalidAuthReturns401() {
+        String invalidAccessToken = "invalid_token";
+
+        given()
+                .auth().oauth2(invalidAccessToken)
+                .when()
+                .get("/statistics/average-temperature")
+                .then()
+                .statusCode(401); // Expecting 401 Unauthorized due to invalid token
     }
 }

@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 
 @Sql("/test-data/cleanup.sql")
@@ -18,7 +17,10 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testGetAllEnvironmentalConditions() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         given()
+                .auth().oauth2(accessToken)
                 .when()
                 .get("/environment")
                 .then()
@@ -30,10 +32,13 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testCreateEnvironmentalCondition() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         var newEnvironmentalCondition = new EnvironmentalConditionRequest(
                 22.0, 70.0, 12.0,
                 LocalDateTime.of(2024, 1, 1, 10, 0, 0), null);
         String stringId = given()
+                .auth().oauth2(accessToken)
                 .contentType(ContentType.JSON)
                 .body(newEnvironmentalCondition)
                 .when()
@@ -45,7 +50,9 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
         UUID id = UUID.fromString(stringId);
 
-        when()
+        given()
+                .auth().oauth2(accessToken)
+                .when()
                 .get("/environment/" + id)
                 .then()
                 .statusCode(200)
@@ -58,25 +65,30 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testCreateEnvironmentalConditionInvalidTimestamp() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         var newEnvironmentalCondition = new EnvironmentalConditionRequest(
                 22.0, 70.0, 12.0,
                 null, null);
         given()
+                .auth().oauth2(accessToken)
                 .contentType(ContentType.JSON)
                 .body(newEnvironmentalCondition)
                 .when()
                 .post("/environment")
                 .then()
                 .statusCode(400);
-
     }
 
     @Test
     public void testCreateEnvironmentalConditionInvalidHumidity() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         var newEnvironmentalCondition = new EnvironmentalConditionRequest(
                 22.0, -5.0, 12.0,
                 null, null);
         given()
+                .auth().oauth2(accessToken)
                 .contentType(ContentType.JSON)
                 .body(newEnvironmentalCondition)
                 .when()
@@ -85,13 +97,15 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
                 .statusCode(400);
     }
 
-
     @Test
     public void testCreateEnvironmentalConditionInvalidLightLevel() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         var newEnvironmentalCondition = new EnvironmentalConditionRequest(
                 22.0, 5.0, -12.0,
                 null, null);
         given()
+                .auth().oauth2(accessToken)
                 .contentType(ContentType.JSON)
                 .body(newEnvironmentalCondition)
                 .when()
@@ -100,13 +114,13 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
                 .statusCode(400);
     }
 
-
-
     @Test
     public void testGetEnvironmentalConditionById() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
         UUID id = UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"); // Use a valid UUID from setup data
 
         given()
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .when()
                 .get("/environment/{id}")
@@ -121,12 +135,14 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testUpdateEnvironmentalCondition() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
         UUID id = UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"); // Assume this ID exists
         EnvironmentalConditionRequest updatedCondition = new EnvironmentalConditionRequest(
                 25.0, 75.0, 15.0,
                 LocalDateTime.of(2024, 1, 1, 12, 0, 0), UUID.fromString("11111111-1111-1111-1111-111111111111"));
 
         given()
+                .auth().oauth2(accessToken)
                 .contentType(ContentType.JSON)
                 .pathParam("id", id)
                 .body(updatedCondition)
@@ -142,9 +158,11 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testDeleteEnvironmentalCondition() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
         UUID id = UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"); // Assume this ID exists
 
         given()
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .when()
                 .delete("/environment/{id}")
@@ -153,6 +171,7 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
         // Optionally, verify it's actually deleted
         given()
+                .auth().oauth2(accessToken)
                 .pathParam("id", id)
                 .when()
                 .get("/environment/{id}")
@@ -162,9 +181,11 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testGetEnvironmentalConditionByInvalidId() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
         UUID invalidId = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"); // Non-existent ID
 
         given()
+                .auth().oauth2(accessToken)
                 .pathParam("id", invalidId)
                 .when()
                 .get("/environment/{id}")
@@ -174,17 +195,32 @@ public class EnvironmentalConditionIntegrationTest extends BaseIntegrationTest {
 
     @Test
     public void testCreateEnvironmentalConditionWithInvalidData() {
+        String accessToken = obtainAccessToken(); // Use the correct username and password
+
         // Attempt to create an environmental condition with missing required fields
         var invalidCondition = new EnvironmentalConditionRequest(
                 null, null, null,
                 LocalDateTime.of(2024, 1, 1, 10, 0, 0), null);
 
         given()
+                .auth().oauth2(accessToken)
                 .contentType(ContentType.JSON)
                 .body(invalidCondition)
                 .when()
                 .post("/environment")
                 .then()
                 .statusCode(400); // Expecting a 400 Bad Request due to invalid input
+    }
+
+    @Test
+    public void testInvalidAuthReturns401() {
+        String invalidAccessToken = "invalid_token";
+
+        given()
+                .auth().oauth2(invalidAccessToken)
+                .when()
+                .get("/environment")
+                .then()
+                .statusCode(401); // Expecting 401 Unauthorized due to invalid token
     }
 }
