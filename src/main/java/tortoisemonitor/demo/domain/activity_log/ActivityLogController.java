@@ -40,7 +40,10 @@ public class ActivityLogController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ActivityLogResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
-                            content = @Content)})
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
+                            content = @Content)
+            })
     @ResponseStatus(HttpStatus.CREATED)
     public ActivityLogResponse logActivity(@Valid @RequestBody ActivityLogRequest activityLogRequest) {
         ActivityLog activityLog = new ActivityLog();
@@ -57,7 +60,10 @@ public class ActivityLogController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved list",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ActivityLogResponse.class)))})
+                                    schema = @Schema(implementation = ActivityLogResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
+                            content = @Content)
+            })
     @ResponseStatus(HttpStatus.OK)
     public List<ActivityLogResponse> getAllActivities() {
         return activityLogService.getAllActivityLogs().stream().map(activityLog -> {
@@ -75,7 +81,10 @@ public class ActivityLogController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = ActivityLogResponse.class))),
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
-                            content = @Content)})
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
+                            content = @Content)
+            })
     @ResponseStatus(HttpStatus.OK)
     public ActivityLogResponse getActivityById(@PathVariable UUID id) {
         ActivityLog activityLog = activityLogService.getActivityLogById(id);
@@ -94,7 +103,10 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
-                            content = @Content)})
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
+                            content = @Content)
+            })
     @ResponseStatus(HttpStatus.OK)
     public ActivityLogResponse updateActivity(@Valid @PathVariable UUID id, @Valid @RequestBody ActivityLogRequest activityLogRequest) {
         ActivityLog activityLog = new ActivityLog();
@@ -112,9 +124,11 @@ public class ActivityLogController {
                     @ApiResponse(responseCode = "200", description = "Activity log deleted successfully",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Activity log not found",
-                            content = @Content)})
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
+                            content = @Content)
+            })
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasRole('owner')")
     public void deleteActivity(@Valid @PathVariable UUID id) {
         activityLogService.deleteActivityLog(id);
     }

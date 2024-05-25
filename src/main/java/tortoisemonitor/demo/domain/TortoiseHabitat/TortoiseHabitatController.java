@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tortoisemonitor.demo.domain.environmental_condition.EnvironmentalConditionService;
 import tortoisemonitor.demo.domain.tortoise.TortoiseService;
@@ -23,14 +22,10 @@ import java.util.stream.Collectors;
 public class TortoiseHabitatController {
 
     public final TortoiseHabitatService tortoiseHabitatService;
-    private final TortoiseService tortoiseService;
-    private final EnvironmentalConditionService environmentalConditionService;
 
     @Autowired
-    public TortoiseHabitatController(TortoiseHabitatService tortoiseHabitatService, TortoiseService tortoiseService, EnvironmentalConditionService environmentalConditionService) {
+    public TortoiseHabitatController(TortoiseHabitatService tortoiseHabitatService) {
         this.tortoiseHabitatService = tortoiseHabitatService;
-        this.tortoiseService = tortoiseService;
-        this.environmentalConditionService = environmentalConditionService;
     }
 
     @PostMapping(value = "", produces = "application/json")
@@ -41,6 +36,8 @@ public class TortoiseHabitatController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = TortoiseHabitatResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     public TortoiseHabitatResponse createTortoiseHabitat(@Valid @RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
@@ -58,7 +55,9 @@ public class TortoiseHabitatController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved list",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = TortoiseHabitatResponse.class)))})
+                                    schema = @Schema(implementation = TortoiseHabitatResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
+                            content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     public List<TortoiseHabitatResponse> getAllTortoiseHabitats() {
         return tortoiseHabitatService.getAllTortoiseHabitats().stream().map(tortoiseHabitat -> {
@@ -76,6 +75,8 @@ public class TortoiseHabitatController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = TortoiseHabitatResponse.class))),
                     @ApiResponse(responseCode = "404", description = "Tortoise habitat not found",
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     public TortoiseHabitatResponse getTortoiseHabitatByUuid(@PathVariable UUID uuid) {
@@ -95,6 +96,8 @@ public class TortoiseHabitatController {
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Tortoise habitat not found",
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     public TortoiseHabitatResponse updateTortoiseHabitat(@Valid @PathVariable UUID uuid, @RequestBody TortoiseHabitatRequest tortoiseHabitatRequest) {
@@ -113,9 +116,10 @@ public class TortoiseHabitatController {
                     @ApiResponse(responseCode = "200", description = "Tortoise habitat deleted successfully",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Tortoise habitat not found",
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasRole('owner')")
     public void deleteTortoiseHabitat(@Valid @PathVariable UUID uuid) {
         tortoiseHabitatService.deleteTortoiseHabitat(uuid);
     }

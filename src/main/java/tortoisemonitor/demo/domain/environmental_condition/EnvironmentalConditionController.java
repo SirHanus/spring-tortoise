@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tortoisemonitor.demo.domain.TortoiseHabitat.TortoiseHabitatService;
@@ -40,6 +39,8 @@ public class EnvironmentalConditionController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = EnvironmentalConditionResponse.class))),
                     @ApiResponse(responseCode = "400", description = "Invalid input",
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = @Content)})
     @ResponseStatus(HttpStatus.CREATED)
     public EnvironmentalConditionResponse logEnvironmentalCondition(@Valid @RequestBody EnvironmentalConditionRequest environmentalConditionRequest) {
@@ -58,7 +59,9 @@ public class EnvironmentalConditionController {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Successfully retrieved list",
                             content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = EnvironmentalConditionResponse.class)))})
+                                    schema = @Schema(implementation = EnvironmentalConditionResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
+                            content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     public List<EnvironmentalConditionResponse> getAllEnvironmentalConditions() {
         List<EnvironmentalConditionResponse> environmentalConditionResponses = new ArrayList<>();
@@ -78,6 +81,8 @@ public class EnvironmentalConditionController {
                             content = @Content(mediaType = "application/json",
                                     schema = @Schema(implementation = EnvironmentalConditionResponse.class))),
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     public EnvironmentalConditionResponse getEnvironmentalConditionById(@PathVariable UUID id) {
@@ -97,6 +102,8 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "400", description = "Invalid input",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
     public EnvironmentalConditionResponse updateEnvironmentalCondition(@Valid @PathVariable UUID id, @Valid @RequestBody EnvironmentalConditionRequest environmentalConditionRequest) {
@@ -116,9 +123,10 @@ public class EnvironmentalConditionController {
                     @ApiResponse(responseCode = "200", description = "Environmental condition deleted successfully",
                             content = @Content),
                     @ApiResponse(responseCode = "404", description = "Environmental condition not found",
+                            content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized",
                             content = @Content)})
     @ResponseStatus(HttpStatus.OK)
-//    @PreAuthorize("hasRole('owner')")
     public void deleteEnvironmentalCondition(@Valid @PathVariable UUID id) {
         environmentalConditionService.deleteEnvironmentalCondition(id);
     }
