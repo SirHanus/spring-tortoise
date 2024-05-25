@@ -28,24 +28,6 @@ public class SecurityConfig {
         this.keycloakClientRoleConverter = keycloakClientRoleConverter;
     }
 
-//    @Bean
-//    public SecurityFilterChain configurePaths(HttpSecurity http)
-//            throws Exception {
-//
-//        http.sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//
-//        http.authorizeHttpRequests(authorizeHttpRequests -> {
-//            // Add Swagger and public paths to the list of permitted paths
-//            authorizeHttpRequests.requestMatchers("/docs.html", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/token").permitAll();
-//
-//            authorizeHttpRequests.anyRequest().authenticated();
-//        });
-//
-//        http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
-//
-//        return http.build();
-//    }
-
     @Bean
     public SecurityFilterChain configurePaths(HttpSecurity http) throws Exception {
 

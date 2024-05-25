@@ -31,36 +31,28 @@ This project is designed to showcase the development of a robust application usi
 ### Docker Configuration
 
 Run the following command to start a PostgreSQL container:
-
 ```bash
 docker run --name postgres -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=123 -p 5433:5432 -d postgres:latest
 ```
-
 Run the following command to start a Keycloak container:
 ```bash
 docker run --name keycloak-container -p 8050:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:24.0.4 start-dev
 ```
 
-To export the Keycloak realm, use the following commands:
+After creating the Docker PostgreSQL and Keycloak containers, run the import_users.ps1 script to setup the realm and users.
 
+<span style="color: red;">Note: You have to setup credentials and roles for the users manually via the admin. The predefined roles are "user" and "owner"</span>
+## Notes
+
+If you need to export the Keycloak realm, use the following commands:
 ```bash
-docker exec -it keycloak-container  /opt/keycloak/bin/kc.sh export --realm TortoiseManager --dir /tmp/export --users same_file
-
+docker exec -it keycloak-container /opt/keycloak/bin/kc.sh export --realm TortoiseManager --dir /tmp/export --users same_file
 docker cp keycloak-container:/tmp/export/TortoiseManager-realm.json D:\
 ```
-To import the Keycloak realm, use the following commands:
+
+If you need to export the users you can use this:
 ```bash
-docker cp TortoiseManager-realm.json keycloak-container:/tmp/TortoiseManager-realm.json
-
-docker exec -it keycloak-container /opt/keycloak/bin/kc.sh import --file /tmp/TortoiseManager-realm.json
-```
-Login and export users
-
 docker exec -it keycloak-container /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080 --realm master --user admin --password admin
 docker exec -it keycloak-container /bin/sh -c "/opt/keycloak/bin/kcadm.sh get users -r TortoiseManager -q max=1000 > /tmp/users.json"
 docker cp keycloak-container:/tmp/users.json D:\
-
-Login and import users
-docker exec -it keycloak-container /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080 --realm master --user admin --password admin
-docker cp ./users.json keycloak-container:/tmp/users.json
-docker exec -it keycloak-container /opt/keycloak/bin/kcadm.sh create users -r TortoiseManager -f /tmp/users.json
+```
