@@ -1,0 +1,52 @@
+[ {
+  "id" : "a7f2ce33-d210-4047-8adf-a2a57fbd2a47",
+  "username" : "admin",
+  "emailVerified" : true,
+  "createdTimestamp" : 1716635124614,
+  "enabled" : true,
+  "totp" : false,
+  "disableableCredentialTypes" : [ ],
+  "requiredActions" : [ "UPDATE_PASSWORD" ],
+  "notBefore" : 0,
+  "access" : {
+    "manageGroupMembership" : true,
+    "view" : true,
+    "mapRoles" : true,
+    "impersonate" : true,
+    "manage" : true
+  }
+}, {
+  "id" : "02f2df7a-68ef-42de-8058-110dc07ba764",
+  "username" : "owner",
+  "emailVerified" : true,
+  "createdTimestamp" : 1716493385760,
+  "enabled" : true,
+  "totp" : false,
+  "disableableCredentialTypes" : [ ],
+  "requiredActions" : [ ],
+  "notBefore" : 0,
+  "access" : {
+    "manageGroupMembership" : true,
+    "view" : true,
+    "mapRoles" : true,
+    "impersonate" : true,
+    "manage" : true
+  }
+}, {
+  "id" : "bddf961c-f832-4abe-83d5-e054dbcdab01",
+  "username" : "user",
+  "emailVerified" : true,
+  "createdTimestamp" : 1716488049013,
+  "enabled" : true,
+  "totp" : false,
+  "disableableCredentialTypes" : [ ],
+  "requiredActions" : [ ],
+  "notBefore" : 0,
+  "access" : {
+    "manageGroupMembership" : true,
+    "view" : true,
+    "mapRoles" : true,
+    "impersonate" : true,
+    "manage" : true
+  }
+} ]

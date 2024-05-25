@@ -54,3 +54,13 @@ docker cp TortoiseManager-realm.json keycloak-container:/tmp/TortoiseManager-rea
 
 docker exec -it keycloak-container /opt/keycloak/bin/kc.sh import --file /tmp/TortoiseManager-realm.json
 ```
+Login and export users
+
+docker exec -it keycloak-container /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080 --realm master --user admin --password admin
+docker exec -it keycloak-container /bin/sh -c "/opt/keycloak/bin/kcadm.sh get users -r TortoiseManager -q max=1000 > /tmp/users.json"
+docker cp keycloak-container:/tmp/users.json D:\
+
+Login and import users
+docker exec -it keycloak-container /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080 --realm master --user admin --password admin
+docker cp ./users.json keycloak-container:/tmp/users.json
+docker exec -it keycloak-container /opt/keycloak/bin/kcadm.sh create users -r TortoiseManager -f /tmp/users.json
