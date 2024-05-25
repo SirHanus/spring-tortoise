@@ -44,7 +44,7 @@ docker run --name keycloak-container -p 8050:8080 -e KEYCLOAK_ADMIN=admin -e KEY
 To export the Keycloak realm, use the following commands:
 
 ```bash
-docker exec -it keycloak-container /opt/keycloak/bin/kc.sh export --realm TortoiseManager --dir /tmp/export
+docker exec -it keycloak-container  /opt/keycloak/bin/kc.sh export --realm TortoiseManager --dir /tmp/export --users same_file
 
 docker cp keycloak-container:/tmp/export/TortoiseManager-realm.json D:\
 ```
